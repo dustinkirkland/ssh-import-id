@@ -1,0 +1,17 @@
+.TH ssh\-import\-id 1 "23 Feb 2010" ssh\-import "ssh\-import"
+.SH NAME
+ssh\-import\-id \- retrieve one or more public keys from a public keyserver (Launchpad.net by default) and append them to the current user's authorized_keys file
+
+.SH SYNOPSIS
+.BI "ssh\-import\-id [launchpad_id_1] [launchpad_id_2] [launchpad_id_3] ...
+
+.SH DESCRIPTION
+This utility will securely contact a public keyserver (Launchpad.net by default) and retrieve one or more user's public keys, and append these to the current user's \fI~/.ssh/authorized_keys\fP file.
+
+.SH SEE ALSO
+\fIssh\fP(1)
+
+.SH AUTHOR
+This manpage and the utility was written by Dustin Kirkland <kirkland@canonical.com> for Ubuntu systems (but may be used by others).  Permission is granted to copy, distribute and/or modify this document under the terms of the GNU General Public License, Version 3 published by the Free Software Foundation.
+
+On Debian systems, the complete text of the GNU General Public License can be found in /usr/share/common-licenses/GPL.

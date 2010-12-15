@@ -1,0 +1,16 @@
+Source: ssh-import-id
+Section: misc
+Priority: extra
+Maintainer: Dustin Kirkland <kirkland@ubuntu.com>
+Build-Depends: debhelper (>= 7)
+Standards-Version: 3.9.1
+Homepage: http://launchpad.net/ssh-import-id
+
+Package: ssh-import-id
+Architecture: all
+Depends: ${misc:Depends}, wget, ca-certificates
+Recommends: openssh-server
+Description: securely retrieve an SSH public key and install it locally
+ This utility will securely contact a public keyserver (Launchpad.net by
+ default), retrieve one or more user's public keys, and append these to
+ the current user's ~/.ssh/authorized_keys file.
