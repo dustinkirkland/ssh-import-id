@@ -1,0 +1,108 @@
+#!/bin/sh
+#
+#    ssh-import-id - authorize a user by fetching their key
+#                    from a public SSH keyserver; Launchpad.net
+#                    by default
+#
+#    Copyright (C) 2010 Canonical Ltd.
+#
+#    Authors: Dustin Kirkland <kirkland@canonical.com>
+#             Scott Moser <smoser@canonical.com>
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, version 3 of the License.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Abort on any unhandled error
+set -e
+
+# The following URL *must* be an https address with a valid, signed certificate!!!
+URL="https://launchpad.net/~%s/+sshkeys"
+
+usage() {
+	echo
+	echo "Usage:"
+	echo "  $0 [USER_ID_1] [USER_ID_2] ... [USER_ID_n]"
+	echo
+	exit 1
+}
+
+[ -n "$1" ] || usage
+
+error() {
+	printf "ERROR: %s\n" "$@" 1>&2
+	exit 1
+}
+
+warn() {
+	printf "WARNING: %s\n" "$@" 1>&2
+}
+
+info() {
+	printf "INFO: %s\n" "$@"
+}
+
+url_encode() {
+	# from http://andy.wordpress.com/2008/09/17/urlencode-in-bash-with-perl/
+	printf "%s" "$1" | perl -pe's/([^-_.~A-Za-z0-9])/sprintf("%%%02X", ord($1))/seg'
+}
+
+validate_keys() {
+	# Prune blank lines, join lines that don't have a '= ',
+	# remove invalid characters
+	sed -i -e '/^$/d' \
+	       -e ':join /=[ ]/!{ N; s/\n// ; b join }' \
+	       -e 's/[^a-zA-Z0-9@: .\/=+-]//g' "$1"
+	# Count lines
+	lines=$(wc -l < "${1}")
+	# Count valid keys
+	keys=$(grep -c "^ssh-[dr]s[sa] [a-zA-Z0-9: .\/=+-]\+ " "$1")
+	# Validate counts match, and >0
+	[ $lines -gt 0 ] && [ $keys -eq $lines ]
+}
+
+# Only support writing to this user's authorized_keys file
+if [ -z "$HOME" ]; then
+	uid=$(id -u) || error "Cannot determine user id"
+	[ -n "$uid" ] || error "User id cannot be empty"
+	pwline=$(getent passwd "$uid") || error "Cannot get passwd entry"
+	HOME=$(echo "$pwline" | awk -F: '{print $6}') || error "Cannot determine home directory"
+	[ -n "$HOME" ] || error "Home directory cannot be empty"
+fi
+
+DIR="$HOME/.ssh"
+FILE="$DIR"/authorized_keys
+
+mkdir -m 0700 "$DIR" 2>/dev/null || true
+[ -d "$DIR" ] || error "Cannot create directory [$DIR]"
+[ -w "$DIR" ] || error "Cannot write to directory [$DIR]"
+[ -e "$FILE" ] || (umask 0177 && touch "$FILE") || error "Cannot create [$FILE]"
+
+rc=0
+tmp=$(mktemp)
+trap "rm -f $tmp" EXIT HUP INT QUIT TERM
+for i in "$@"; do
+	i=$(url_encode "$i") || error "Failed encoding [$i]"
+	url=$(printf "$URL" "$i")
+	if env -i wget --quiet -O- "$url" > "$tmp"; then
+		echo >> "$tmp" # needed for wc
+		if ! validate_keys "$tmp"; then
+			warn "Invalid keys at [$url]"
+			continue
+		fi
+		cat "$tmp" >> "$FILE" || error "Could not write to [$tmp]"
+		info "Successfully authorized [$i]"
+	else
+		rc=$?
+		warn "Failed to retrieve key for [$i] from [$url]"
+	fi
+done
+exit $rc
