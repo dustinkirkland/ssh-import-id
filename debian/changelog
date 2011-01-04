@@ -1,8 +1,8 @@
-ssh-import-id (2.0) unreleased; urgency=low
+ssh-import-id (2.0-0ubuntu1) natty; urgency=low
 
   * Split the ssh-import-id utility out of the openssh package;
     cjwatson doesn't want to see bugs about the tool, nor be bothered
     with the maintenance thereof, hence a new package
   * Relicensing the code and documentation from BSD -> GPLv3
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Wed, 15 Dec 2010 12:08:23 -0600
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 04 Jan 2011 16:16:30 -0600
