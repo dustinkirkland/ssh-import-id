@@ -28,14 +28,18 @@ set -e
 URL="https://launchpad.net/~%s/+sshkeys"
 
 usage() {
-	echo
-	echo "Usage:"
-	echo "  $0 [USER_ID_1] [USER_ID_2] ... [USER_ID_n]"
-	echo
-	exit 1
-}
+	cat <<EOF
+Usage: ${0##*/} [options] USER_ID [USER_ID_2] ... [USER_ID_n]
 
-[ -n "$1" ] || usage
+   import ssh keys for listed users, writing output to a file.
+
+   options:
+      -h | --help        this help
+      -o | --output F    write output to file 'F' 
+                         (default ~/.ssh/authorized_keys)
+EOF
+}
+bad_usage() { usage 1>&2; echo "$@" 1>&2; exit 1; }
 
 error() {
 	printf "ERROR: %s\n" "$@" 1>&2
@@ -47,7 +51,7 @@ warn() {
 }
 
 info() {
-	printf "INFO: %s\n" "$@"
+	printf "INFO: %s\n" "$@" 1>&2
 }
 
 url_encode() {
@@ -69,40 +73,74 @@ validate_keys() {
 	[ $lines -gt 0 ] && [ $keys -eq $lines ]
 }
 
-# Only support writing to this user's authorized_keys file
-if [ -z "$HOME" ]; then
-	uid=$(id -u) || error "Cannot determine user id"
-	[ -n "$uid" ] || error "User id cannot be empty"
-	pwline=$(getent passwd "$uid") || error "Cannot get passwd entry"
-	HOME=$(echo "$pwline" | awk -F: '{print $6}') || error "Cannot determine home directory"
-	[ -n "$HOME" ] || error "Home directory cannot be empty"
+get_authkeypath() {
+	# Only support writing to this user's authorized_keys file
+	local home
+	if [ -z "$HOME" ]; then
+		uid=$(id -u) || error "Cannot determine user id"
+		[ -n "$uid" ] || error "User id cannot be empty"
+		pwline=$(getent passwd "$uid") || error "Cannot get passwd entry"
+		home=$(echo "$pwline" | awk -F: '{print $6}') || error "Cannot determine home directory"
+		[ -n "$home" ] || error "Home directory cannot be empty"
+	fi
+
+	_RET="${home}/.ssh/authorized_keys"
+}
+
+short_opts="ho:"
+long_opts="help,output:"
+getopt_out=$(getopt --shell sh --name "${0##*/}" \
+	--options "${short_opts}" --long "${long_opts}" -- "$@") &&
+	eval set -- "${getopt_out}" ||
+	bad_usage
+
+output=""
+while [ $# -ne 0 ]; do
+	cur=${1}; next=${2};
+	case "$cur" in
+		-h|--help) usage; exit 0;;
+		-o|--output) output="${2}"; shift;;
+		--) shift; break;;
+	esac
+	shift;
+done
+
+[ -n "$1" ] || bad_usage "must give user"
+
+if [ -z "${output}" ]; then
+	get_authkeypath
+	output=${_RET}
+	dir=${output%/*}
+	mkdir -m 0700 "${dir%/*}" 2>/dev/null || true
+	[ -d "$dir" ] || error "Cannot create directory [$dir]"
+	[ -e "$output" ] || (umask 0177 && touch "$output") ||
+		error "Cannot create [$output]"
 fi
 
-DIR="$HOME/.ssh"
-FILE="$DIR"/authorized_keys
-
-mkdir -m 0700 "$DIR" 2>/dev/null || true
-[ -d "$DIR" ] || error "Cannot create directory [$DIR]"
-[ -w "$DIR" ] || error "Cannot write to directory [$DIR]"
-[ -e "$FILE" ] || (umask 0177 && touch "$FILE") || error "Cannot create [$FILE]"
-
-rc=0
 tmp=$(mktemp)
 trap "rm -f $tmp" EXIT HUP INT QUIT TERM
+rc=0
 for i in "$@"; do
 	i=$(url_encode "$i") || error "Failed encoding [$i]"
 	url=$(printf "$URL" "$i")
-	if env -i wget --quiet -O- "$url" > "$tmp"; then
-		echo >> "$tmp" # needed for wc
-		if ! validate_keys "$tmp"; then
-			warn "Invalid keys at [$url]"
-			continue
-		fi
-		cat "$tmp" >> "$FILE" || error "Could not write to [$tmp]"
-		info "Successfully authorized [$i]"
-	else
-		rc=$?
+	if ! env -i wget --quiet -O- "$url" > "$tmp"; then
+ 		rc=$(($rc+1));
 		warn "Failed to retrieve key for [$i] from [$url]"
+		continue
 	fi
+	echo >> "$tmp" # needed for wc
+	if ! validate_keys "$tmp"; then
+		warn "Invalid keys at [$url]"
+ 		rc=$(($rc+1));
+		continue
+	fi
+	if [ "${output}" = "-" ]; then
+		cat "$tmp" || error "Could not write to stdout";
+	else
+		cat "$tmp" >> "$output" || error "Could not write to [$output]";
+	fi
+	info "Successfully authorized [$i]"
 done
 exit $rc
+
+# vi: ts=4 noexpandtab
