@@ -75,7 +75,7 @@ validate_keys() {
 
 get_authkeypath() {
 	# Only support writing to this user's authorized_keys file
-	local home
+	local home="${HOME}"
 	if [ -z "$HOME" ]; then
 		uid=$(id -u) || error "Cannot determine user id"
 		[ -n "$uid" ] || error "User id cannot be empty"
