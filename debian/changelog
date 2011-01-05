@@ -1,9 +1,9 @@
-ssh-import-id (2.1) unreleased; urgency=low
+ssh-import-id (2.1-0ubuntu1) natty; urgency=low
 
   * debian/control: change the Conflicts to a Breaks, as pointed out
     by cjwatson, per Debian policy section 7.6
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 04 Jan 2011 16:16:33 -0600
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Wed, 05 Jan 2011 08:59:24 -0600
 
 ssh-import-id (2.0-0ubuntu1) natty; urgency=low
 
