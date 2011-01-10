@@ -1,6 +1,13 @@
 ssh-import-id (2.2) unreleased; urgency=low
 
-  * UNRELEASED
+  [ Scott Moser ]
+  * use getopt, send 'info' to stderr, add '--output', LP: #688574
+    - support '--help'
+    - add '--output' or '-o' option to write downloaded and
+      verified data to a named file (supporting '-' for stdout) rather
+      that writing to users .ssh/authorized_keys
+    - send 'info' output to standard error rather than standard out
+      This is required to deal with '--output -'
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Wed, 05 Jan 2011 08:59:28 -0600
 
