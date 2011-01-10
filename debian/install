@@ -1,1 +1,2 @@
 ssh-import-id usr/bin
+ssh_import_id etc/ssh
