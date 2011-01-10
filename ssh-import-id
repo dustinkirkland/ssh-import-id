@@ -24,9 +24,6 @@
 # Abort on any unhandled error
 set -e
 
-# The following URL *must* be an https address with a valid, signed certificate!!!
-URL="https://launchpad.net/~%s/+sshkeys"
-
 usage() {
 	cat <<EOF
 Usage: ${0##*/} [options] USER_ID [USER_ID_2] ... [USER_ID_n]
@@ -86,6 +83,10 @@ get_authkeypath() {
 
 	_RET="${home}/.ssh/authorized_keys"
 }
+
+# Obtain the URL string
+. /etc/ssh/ssh_import_id
+[ -n "$URL" ] || error "URL must be set in /etc/ssh/ssh_import_id"
 
 short_opts="ho:"
 long_opts="help,output:"
