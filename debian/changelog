@@ -10,6 +10,9 @@ ssh-import-id (2.2) unreleased; urgency=low
       This is required to deal with '--output -'
   * remove carriage returns from key strings (LP: #651698)
 
+  [ Dustin Kirkland ]
+  * ssh-import-id.1: updated to reflect smoser's changes
+
  -- Dustin Kirkland <kirkland@ubuntu.com>  Wed, 05 Jan 2011 08:59:28 -0600
 
 ssh-import-id (2.1-0ubuntu1) natty; urgency=low

@@ -1,12 +1,16 @@
 .TH ssh\-import\-id 1 "23 Feb 2010" ssh\-import "ssh\-import"
 .SH NAME
-ssh\-import\-id \- retrieve one or more public keys from a public keyserver (Launchpad.net by default) and append them to the current user's authorized_keys file
+ssh\-import\-id \- retrieve one or more public keys from a public keyserver (Launchpad.net by default) and append them to the current user's authorized_keys file (or some other specified file)
 
 .SH SYNOPSIS
-.BI "ssh\-import\-id [launchpad_id_1] [launchpad_id_2] [launchpad_id_3] ...
+.BI "ssh\-import\-id [options] USER_ID_1 [USER_ID_2] ... [USER_ID_n]
+
+.SH OPTIONS
+ \-h | \-\-help		usage
+ \-o | \-\-output F	write output to file 'F' (default ~/.ssh/authorized_keys, use "\-" for standard out)
 
 .SH DESCRIPTION
-This utility will securely contact a public keyserver (Launchpad.net by default) and retrieve one or more user's public keys, and append these to the current user's \fI~/.ssh/authorized_keys\fP file.
+This utility will securely contact a public keyserver (\fIhttps://launchpad.ne\fP by default) and retrieve one or more user's public keys, and append these to the current user's \fI~/.ssh/authorized_keys\fP file.
 
 .SH SEE ALSO
 \fIssh\fP(1)
