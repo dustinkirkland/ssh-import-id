@@ -1,3 +1,9 @@
+ssh-import-id (2.3) unreleased; urgency=low
+
+  * UNRELEASED
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 10 Jan 2011 12:56:35 -0600
+
 ssh-import-id (2.2-0ubuntu1) natty; urgency=low
 
   [ Scott Moser ]
