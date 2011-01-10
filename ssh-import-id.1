@@ -10,10 +10,15 @@ ssh\-import\-id \- retrieve one or more public keys from a public keyserver (Lau
  \-o | \-\-output F	write output to file 'F' (default ~/.ssh/authorized_keys, use "\-" for standard out)
 
 .SH DESCRIPTION
-This utility will securely contact a public keyserver (\fIhttps://launchpad.ne\fP by default) and retrieve one or more user's public keys, and append these to the current user's \fI~/.ssh/authorized_keys\fP file.
+This utility will securely contact a public keyserver (\fIhttps://launchpad.net\fP by default) and retrieve one or more user's public keys, and append these to the current user's \fI~/.ssh/authorized_keys\fP file.
+
+The system administrator can change the source URL used by \fBssh\-import\-id\fP(1) by editing the configuration file, \fI/etc/ssh/ssh_import_id\fP, which is sourced to obtain the value of URL.  By default, URL="https://launchpad.net/~%s/+sshkeys".  Note that this url really \fBMUST\fP be a secure, https url with a valid, signed certificate or else your system will be vulnerable to man-in-the-middle attacks!  The "%s" will be populated by \fBssh\-import\-id\fP(1) with the value(s) of USER_ID_1 [USER_ID_2] ... [USER_ID_n].
 
 .SH SEE ALSO
 \fIssh\fP(1)
+
+.SH FILES
+\fI/etc/ssh/ssh_import_id\fP
 
 .SH AUTHOR
 This manpage and the utility was written by Dustin Kirkland <kirkland@canonical.com> for Ubuntu systems (but may be used by others).  Permission is granted to copy, distribute and/or modify this document under the terms of the GNU General Public License, Version 3 published by the Free Software Foundation.
