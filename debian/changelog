@@ -15,6 +15,7 @@ ssh-import-id (2.2) unreleased; urgency=low
   * debian/install, ssh_import_id, ssh-import-id: allow for URL to be
     admin-configurable, to point to other SSH public key stores besides
     Launchpad.net
+  * ssh-import-id.1: document /etc/ssh/ssh_import_id
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Wed, 05 Jan 2011 08:59:28 -0600
 
