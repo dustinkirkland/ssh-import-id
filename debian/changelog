@@ -1,4 +1,4 @@
-ssh-import-id (2.2) unreleased; urgency=low
+ssh-import-id (2.2-0ubuntu1) natty; urgency=low
 
   [ Scott Moser ]
   * use getopt, send 'info' to stderr, add '--output', LP: #688574
@@ -17,7 +17,7 @@ ssh-import-id (2.2) unreleased; urgency=low
     Launchpad.net
   * ssh-import-id.1: document /etc/ssh/ssh_import_id
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Wed, 05 Jan 2011 08:59:28 -0600
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 10 Jan 2011 12:56:32 -0600
 
 ssh-import-id (2.1-0ubuntu1) natty; urgency=low
 
