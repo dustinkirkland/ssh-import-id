@@ -1,6 +1,7 @@
 ssh-import-id (2.3) unreleased; urgency=low
 
-  * UNRELEASED
+  * ssh-import-id: ensure that ~/.ssh is created, fix regression
+    introduced by smoser ;-)
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 10 Jan 2011 12:56:35 -0600
 
