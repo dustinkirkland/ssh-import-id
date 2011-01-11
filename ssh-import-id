@@ -112,7 +112,7 @@ if [ -z "${output}" ]; then
 	get_authkeypath
 	output=${_RET}
 	dir=${output%/*}
-	mkdir -m 0700 "${dir%/*}" 2>/dev/null || true
+	mkdir -p -m 0700 "${dir}" 2>/dev/null || true
 	[ -d "$dir" ] || error "Cannot create directory [$dir]"
 	[ -e "$output" ] || (umask 0177 && touch "$output") ||
 		error "Cannot create [$output]"
