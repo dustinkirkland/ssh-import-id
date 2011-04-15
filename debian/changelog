@@ -1,6 +1,9 @@
 ssh-import-id (2.4) unreleased; urgency=low
 
-  * UNRELEASED
+  [ Scott Moser ]
+  * ssh-import-id:
+    - fix import of users whose keys have blank lines and dos EOL
+    - do not require /etc/ssh/ssh_import_id to be present
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 11 Jan 2011 11:12:42 -0600
 
