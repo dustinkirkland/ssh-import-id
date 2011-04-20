@@ -85,9 +85,10 @@ get_authkeypath() {
 }
 
 # Obtain the URL string
-URL="https://launchpad.net/~%s/+sshkeys"
-{ [ ! -e /etc/ssh/ssh_import_id ] || . /etc/ssh/ssh_import_id ; } ||
-	error "failed to source /etc/ssh/ssh_import_id"
+if [ -z "$URL" ]; then
+	URL="https://launchpad.net/~%s/+sshkeys"
+	{ [ ! -e /etc/ssh/ssh_import_id ] || . /etc/ssh/ssh_import_id ; } || error "failed to source /etc/ssh/ssh_import_id"
+fi
 [ -n "$URL" ] || error "URL must be set"
 
 short_opts="ho:"
