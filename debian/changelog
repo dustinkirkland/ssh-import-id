@@ -1,9 +1,9 @@
-ssh-import-id (2.5) unreleased; urgency=low
+ssh-import-id (2.5-0ubuntu1) natty; urgency=low
 
   * ssh-import-id: enable users to override URL with a per-use
     environment variable
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Fri, 15 Apr 2011 09:48:33 -0500
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Wed, 20 Apr 2011 15:38:50 -0400
 
 ssh-import-id (2.4-0ubuntu1) natty; urgency=low
 
