@@ -1,3 +1,9 @@
+ssh-import-id (2.6) unreleased; urgency=low
+
+  * UNRELEASED
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Wed, 20 Apr 2011 15:39:01 -0400
+
 ssh-import-id (2.5-0ubuntu1) natty; urgency=low
 
   * ssh-import-id: enable users to override URL with a per-use
