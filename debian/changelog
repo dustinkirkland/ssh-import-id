@@ -1,8 +1,9 @@
-ssh-import-id (2.6) unreleased; urgency=low
+ssh-import-id (2.5-0ubuntu2) oneiric; urgency=low
 
-  * UNRELEASED
+  * provide a symlink so ssh-import-id can be invoked as 
+    ssh-import-lp-id (LP: #870112)
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Wed, 20 Apr 2011 15:39:01 -0400
+ -- Scott Moser <smoser@ubuntu.com>  Fri, 07 Oct 2011 13:08:44 -0400
 
 ssh-import-id (2.5-0ubuntu1) natty; urgency=low
 
