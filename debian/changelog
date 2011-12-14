@@ -1,6 +1,14 @@
+ssh-import-id (2.6) UNRELEASED; urgency=low
+
+  * Revert the last commit, removing the ssh-import-lp-id link, as this
+    breaks tab completion.  Instead, let's fix the ssh-import-lp-id
+    caller and SRU it;  LP: #870112
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Wed, 14 Dec 2011 09:00:35 -0600
+
 ssh-import-id (2.5-0ubuntu2) oneiric; urgency=low
 
-  * provide a symlink so ssh-import-id can be invoked as 
+  * provide a symlink so ssh-import-id can be invoked as
     ssh-import-lp-id (LP: #870112)
 
  -- Scott Moser <smoser@ubuntu.com>  Fri, 07 Oct 2011 13:08:44 -0400
