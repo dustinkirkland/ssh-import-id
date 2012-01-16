@@ -3,6 +3,8 @@ ssh-import-id (2.7) unreleased; urgency=low
   * ssh-import-id: LP: #885205
     - fix bug where lines are merged if they don't include a "= "
     - instead, check for lines that begin with "^ssh-"
+  * ssh-import-id:
+    - line up sed whitespace
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Wed, 14 Dec 2011 09:07:04 -0600
 
