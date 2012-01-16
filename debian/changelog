@@ -1,4 +1,4 @@
-ssh-import-id (2.7) unreleased; urgency=low
+ssh-import-id (2.7-0ubuntu1) precise; urgency=low
 
   * ssh-import-id: LP: #885205, LP: #702932
     - fix bug where lines are merged if they don't include a "= "
@@ -6,7 +6,7 @@ ssh-import-id (2.7) unreleased; urgency=low
   * ssh-import-id:
     - line up sed whitespace
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Wed, 14 Dec 2011 09:07:04 -0600
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 16 Jan 2012 17:42:51 -0600
 
 ssh-import-id (2.6-0ubuntu1) precise; urgency=low
 
