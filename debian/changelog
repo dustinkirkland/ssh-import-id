@@ -1,6 +1,6 @@
 ssh-import-id (2.7) unreleased; urgency=low
 
-  * ssh-import-id: LP: #885205
+  * ssh-import-id: LP: #885205, LP: #702932
     - fix bug where lines are merged if they don't include a "= "
     - instead, check for lines that begin with "^ssh-"
   * ssh-import-id:
