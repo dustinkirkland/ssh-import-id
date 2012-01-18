@@ -1,6 +1,8 @@
 ssh-import-id (2.8) unreleased; urgency=low
 
-  * UNRELEASED
+  [ Soren Hansen ]
+  * ssh-import-id: LP: #918131
+    - Sequences of a's were getting filtered from public keys
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 16 Jan 2012 17:42:54 -0600
 
