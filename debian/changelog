@@ -1,10 +1,10 @@
-ssh-import-id (2.9) unreleased; urgency=low
+ssh-import-id (2.9-0ubuntu1) precise; urgency=low
 
   * debian/control:
     - we don't technically break openssh-server;  this could cause
       openssh-server to be removed;  that's bad
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Wed, 18 Jan 2012 09:48:25 -0600
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 31 Jan 2012 16:01:56 -0600
 
 ssh-import-id (2.8-0ubuntu1) precise; urgency=low
 
