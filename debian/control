@@ -10,8 +10,8 @@ Package: ssh-import-id
 Architecture: all
 Depends: ${misc:Depends}, wget, ca-certificates
 Recommends: openssh-server
-Breaks: ssh-import, openssh-server (<< 1:5.6p1-2ubuntu4)
-Replaces: ssh-import, openssh-server (<< 1:5.6p1-2ubuntu4)
+Breaks: ssh-import
+Replaces: ssh-import
 Description: securely retrieve an SSH public key and install it locally
  This utility will securely contact a public keyserver (Launchpad.net by
  default), retrieve one or more user's public keys, and append these to
