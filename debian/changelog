@@ -1,6 +1,8 @@
 ssh-import-id (2.10) unreleased; urgency=low
 
-  * UNRELEASED
+  * === added directory img, img/ssh-import-id_14.png, img/ssh-import-
+    id_192.png, img/ssh-import-id_64.png, img/ssh-import-id.png:
+    - add logos to revision control
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 31 Jan 2012 16:01:59 -0600
 
