@@ -3,6 +3,9 @@ ssh-import-id (2.10) unreleased; urgency=low
   * === added directory img, img/ssh-import-id_14.png, img/ssh-import-
     id_192.png, img/ssh-import-id_64.png, img/ssh-import-id.png:
     - add logos to revision control
+  * ssh-import-id, ssh-import-id.1: LP: #944367
+    - add -e parameter, which says "don't clean my environment"
+    - helps if someone needs to set $https_proxy
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 31 Jan 2012 16:01:59 -0600
 

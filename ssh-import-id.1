@@ -7,12 +7,15 @@ ssh\-import\-id \- retrieve one or more public keys from a public keyserver (Lau
 
 .SH OPTIONS
  \-h | \-\-help		usage
+ \-e | \-\-environment  use the current environment (by default, all environment variables are cleaned before importing ids)
  \-o | \-\-output F	write output to file 'F' (default ~/.ssh/authorized_keys, use "\-" for standard out)
 
 .SH DESCRIPTION
 This utility will securely contact a public keyserver (\fIhttps://launchpad.net\fP by default) and retrieve one or more user's public keys, and append these to the current user's \fI~/.ssh/authorized_keys\fP file.
 
 The system administrator can change the source URL used by \fBssh\-import\-id\fP(1) by editing the configuration file, \fI/etc/ssh/ssh_import_id\fP, which is sourced to obtain the value of URL.  By default, URL="https://launchpad.net/~%s/+sshkeys".  Note that this url really \fBMUST\fP be a secure, https url with a valid, signed certificate or else your system will be vulnerable to man-in-the-middle attacks!  The "%s" will be populated by \fBssh\-import\-id\fP(1) with the value(s) of USER_ID_1 [USER_ID_2] ... [USER_ID_n].
+
+The \-e option will be necessary if you need to use a proxy defined in $https_proxy, for instance.
 
 .SH SEE ALSO
 \fIssh\fP(1)
