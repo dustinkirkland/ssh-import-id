@@ -1,4 +1,4 @@
-ssh-import-id (2.10) unreleased; urgency=low
+ssh-import-id (2.10-0ubuntu1) precise; urgency=low
 
   * === added directory img, img/ssh-import-id_14.png, img/ssh-import-
     id_192.png, img/ssh-import-id_64.png, img/ssh-import-id.png:
@@ -7,7 +7,7 @@ ssh-import-id (2.10) unreleased; urgency=low
     - add -e parameter, which says "don't clean my environment"
     - helps if someone needs to set $https_proxy
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 31 Jan 2012 16:01:59 -0600
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Sat, 03 Mar 2012 08:32:25 -0600
 
 ssh-import-id (2.9-0ubuntu1) precise; urgency=low
 
