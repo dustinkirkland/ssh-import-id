@@ -93,18 +93,20 @@ if [ -z "$URL" ]; then
 fi
 [ -n "$URL" ] || error "URL must be set"
 
-short_opts="ho:"
-long_opts="help,output:"
+short_opts="heo:"
+long_opts="help,environment,output:"
 getopt_out=$(getopt --shell sh --name "${0##*/}" \
 	--options "${short_opts}" --long "${long_opts}" -- "$@") &&
 	eval set -- "${getopt_out}" ||
 	bad_usage
 
 output=""
+clean_env="env -i"
 while [ $# -ne 0 ]; do
 	cur=${1}; next=${2};
 	case "$cur" in
 		-h|--help) usage; exit 0;;
+		-e|--environment) clean_env="" ;;
 		-o|--output) output="${2}"; shift;;
 		--) shift; break;;
 	esac
@@ -129,7 +131,7 @@ rc=0
 for i in "$@"; do
 	i=$(url_encode "$i") || error "Failed encoding [$i]"
 	url=$(printf "$URL" "$i")
-	if ! env -i wget --quiet -O- "$url" > "$tmp"; then
+	if ! $clean_env wget --quiet -O- "$url" > "$tmp"; then
  		rc=$(($rc+1));
 		warn "Failed to retrieve key for [$i] from [$url]"
 		continue
