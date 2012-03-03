@@ -1,3 +1,9 @@
+ssh-import-id (2.11) unreleased; urgency=low
+
+  * UNRELEASED
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Sat, 03 Mar 2012 08:32:29 -0600
+
 ssh-import-id (2.10-0ubuntu1) precise; urgency=low
 
   * === added directory img, img/ssh-import-id_14.png, img/ssh-import-
