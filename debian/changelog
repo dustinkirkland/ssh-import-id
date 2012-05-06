@@ -1,8 +1,11 @@
 ssh-import-id (2.11) unreleased; urgency=low
 
-  * UNRELEASED
+  [ Dražen Lučanin ]
+  * ssh-import-id:
+    - ensure there are newlines at the end of keys
+    - add 2 blank lines between each key for readability
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Sat, 03 Mar 2012 08:32:29 -0600
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Sun, 06 May 2012 10:40:36 -0500
 
 ssh-import-id (2.10-0ubuntu1) precise; urgency=low
 
