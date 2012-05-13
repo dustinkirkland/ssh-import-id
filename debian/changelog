@@ -1,10 +1,10 @@
-ssh-import-id (2.12) unreleased; urgency=low
+ssh-import-id (2.12-0ubuntu1) quantal; urgency=low
 
   [ Jani Uusitalo ]
   * ssh_import_id: LP: #997143
     - fix typo in comment
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Sun, 06 May 2012 10:46:39 -0500
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Sat, 12 May 2012 19:58:12 -0700
 
 ssh-import-id (2.11-0ubuntu1) quantal; urgency=low
 
