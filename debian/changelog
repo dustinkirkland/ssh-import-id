@@ -9,7 +9,7 @@ ssh-import-id (2.12) unreleased; urgency=low
 ssh-import-id (2.11-0ubuntu1) quantal; urgency=low
 
   [ Dražen Lučanin ]
-  * ssh-import-id:
+  * ssh-import-id: LP: #990501
     - ensure there are newlines at the end of keys
     - add 2 blank lines between each key for readability
 
