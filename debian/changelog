@@ -1,6 +1,8 @@
 ssh-import-id (2.12) unreleased; urgency=low
 
-  * UNRELEASED
+  [ Jani Uusitalo ]
+  * ssh_import_id: LP: #997143
+    - fix typo in comment
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Sun, 06 May 2012 10:46:39 -0500
 
