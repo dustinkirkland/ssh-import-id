@@ -1,4 +1,4 @@
-ssh-import-id (2.13) unreleased; urgency=low
+ssh-import-id (2.13-0ubuntu1) raring; urgency=low
 
   * ssh-import-id:
     - completely rewrite the validate_keys function
@@ -10,7 +10,7 @@ ssh-import-id (2.13) unreleased; urgency=low
     - depend on openssh-client, which provides the ssh-keygen command
     - bump standards
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Sat, 12 May 2012 19:58:14 -0700
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 23 Oct 2012 17:31:55 -0500
 
 ssh-import-id (2.12-0ubuntu1) quantal; urgency=low
 
