@@ -6,6 +6,8 @@ ssh-import-id (2.13) unreleased; urgency=low
       SSH's ssh-keygen -l to validate keys by calculating fingerprints
     - display fingerprints on stderr, such that users can verify those
       or discard it
+  * debian/control:
+    - depend on openssh-client, which provides the ssh-keygen command
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Sat, 12 May 2012 19:58:14 -0700
 

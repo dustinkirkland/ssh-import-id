@@ -8,7 +8,7 @@ Homepage: http://launchpad.net/ssh-import-id
 
 Package: ssh-import-id
 Architecture: all
-Depends: ${misc:Depends}, wget, ca-certificates
+Depends: ${misc:Depends}, wget, ca-certificates, openssh-client
 Recommends: openssh-server
 Breaks: ssh-import
 Replaces: ssh-import
