@@ -1,6 +1,11 @@
 ssh-import-id (2.13) unreleased; urgency=low
 
-  * UNRELEASED
+  * ssh-import-id:
+    - completely rewrite the validate_keys function
+    - fix our broken, crappy regular expressions, and instead, rely on
+      SSH's ssh-keygen -l to validate keys by calculating fingerprints
+    - display fingerprints on stderr, such that users can verify those
+      or discard it
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Sat, 12 May 2012 19:58:14 -0700
 

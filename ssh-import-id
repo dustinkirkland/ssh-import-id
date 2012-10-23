@@ -57,23 +57,21 @@ url_encode() {
 }
 
 validate_keys() {
-	# Prune blank lines, join lines that don't start with ^ssh-
-	# remove invalid characters and add a controlled number of newlines
-	# (for readabililty and because items mustn't be in the same line)
-	LC_COLLATE=C \
-	sed -i	-e '/^$/d' \
-		-e '/^\r/d' \
-		-e ':join /^ssh-/!{ N; s/[\n\r]//g ; b join }' \
-		-e 's/[^a-zA-Z0-9@: .\/=+-]//g' "$1" \
-		-e '/^ssh-/a\\n'
-	# Count lines
-	lines=$(wc -l < "${1}")
-	# Count valid keys
-	keys=$(grep -c "^ssh-[dr]s[sa] [a-zA-Z0-9: .\/=+-]\+ " "$1")
-	# Multiply by 3 to account for 2 newlines after every item
-	keysmult=$(($keys * 3))
-	# Validate counts match, and >0
-	[ $lines -gt 0 ] && [ $keysmult -eq $lines ]
+	# Split the retrieved public keys into one-line-per-file
+	# Validate that ssh can calculate the fingerprint of each key
+	# Show fingerprints on stderr (not stdout)
+	# Return non-zero of any one fails to compute
+	# Remove blank lines
+	LC_COLLATE=C sed -i -e '/^$/d' -e '/^\r/d' "$1"
+	local tmpdir=$(mktemp -d)
+	split -l 1 "$1" "$tmpdir/"
+	local i
+	local rc=0
+	for i in "$tmpdir/"*; do
+		ssh-keygen -l -f "$i" 1>&2 || rc=1
+	done
+	rm -rf "$tmpdir"
+	[ "$rc" = "0" ]
 }
 
 get_authkeypath() {
