@@ -8,6 +8,7 @@ ssh-import-id (2.13) unreleased; urgency=low
       or discard it
   * debian/control:
     - depend on openssh-client, which provides the ssh-keygen command
+    - bump standards
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Sat, 12 May 2012 19:58:14 -0700
 
