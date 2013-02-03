@@ -1,7 +1,8 @@
 ssh-import-id (2.14) unreleased; urgency=low
 
   * ssh-import-id.py:
-    - initial port to Python
+    - initial port to Python2
+    - ported to Python3
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 23 Oct 2012 17:32:00 -0500
 
