@@ -7,6 +7,7 @@ ssh-import-id (2.14) unreleased; urgency=low
     - create a proper main function
     - add early support for gh:username (github) as well as lp:username
       (launchpad)
+    - drop pycurl in favor of a more portable, reliable shell out to wget
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 23 Oct 2012 17:32:00 -0500
 
