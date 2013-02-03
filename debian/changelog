@@ -5,6 +5,8 @@ ssh-import-id (2.14) unreleased; urgency=low
     - ported to Python3
     - more inline comments
     - create a proper main function
+    - add early support for gh:username (github) as well as lp:username
+      (launchpad)
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 23 Oct 2012 17:32:00 -0500
 

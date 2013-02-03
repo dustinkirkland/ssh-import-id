@@ -27,6 +27,7 @@
 import argparse
 import getopt
 import io
+import json
 import os
 import pycurl
 import string
@@ -37,17 +38,15 @@ try:
 	# Python2
 	from urllib import quote_plus
 	from StringIO import StringIO
-except:
+except (ImportError,):
 	# Python3
 	from urllib.parse import quote_plus
 	from io import StringIO
 
 
-def error(msg, tmpfile=False):
+def error(msg):
 	"""Print error message on stderr and exit non-zero immediately"""
 	sys.stderr.write("ERROR: %s\n" % msg)
-	if tmpfile and os.path.exists(tmpfile):
-		os.unlink(tmpfile)
 	sys.exit(1)
 
 
@@ -61,26 +60,75 @@ def info(msg):
 	sys.stderr.write("INFO: %s\n" % msg)
 
 
-def validate(keys):
-	"""Validate one or more public ssh keys in a file"""
+def valid(public_key_file, output):
+	"""Validate a public key in a file"""
+	# Validate that ssh can calculate the fingerprint of each key
+	p = subprocess.Popen(["ssh-keygen", "-l", "-f", public_key_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	stdout, stderr = p.communicate()
+	# Show fingerprints on stderr (not stdout)
+	sys.stderr.write(stdout.decode('utf-8'))
+	sys.stderr.write(stderr.decode('utf-8'))
+	if p.returncode == 0:
+		# Handle output
+		f = open(public_key_file, "r")
+		pubkey = f.read()
+		f.close()
+		if output == "-":
+			# Print public key to stdout
+			sys.stdout.write(pubkey)
+			sys.stdout.write("\n")
+		else:
+			# Print public key to a file
+			try:
+				f = open(output, "a")
+				f.write("\n%s\n" % pubkey)
+				f.close()
+			except:
+				error("Could not write to [%s]" % output)
+		return True
+	return False
+
+
+def validate(keys, results_type, output):
+	"""Use the appropriate driver for key processing"""
+	if results_type == "raw":
+		return validate_raw(keys, output)
+	elif results_type == "json":
+		return validate_json(keys, output)
+	else:
+		return False
+
+
+def validate_raw(keys, output):
+	"""Validate one or more public ssh keys in a raw file"""
 	f, tmp = tempfile.mkstemp()
 	os.close(f)
 	rc = True
 	# Split the retrieved public keys into one-line-per-file
-	for k in open(keys, "r").readlines():
+	for k in keys.split("\n"):
 		# Skip blank lines
 		if k.strip():
 			f = open(tmp, "w")
 			f.write(k)
 			f.close()
-			# Validate that ssh can calculate the fingerprint of each key
-			p = subprocess.Popen(["ssh-keygen", "-l", "-f", tmp], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-			stdout, stderr = p.communicate()
-			# Show fingerprints on stderr (not stdout)
-			sys.stderr.write(stdout.decode('utf-8'))
-			sys.stderr.write(stderr.decode('utf-8'))
-			if p.returncode != 0:
-				# Return false if any one fails to compute
+			if not valid(tmp, output):
+				rc = False
+	os.unlink(tmp)
+	return rc
+
+
+def validate_json(keys, output):
+	"""Validate one or more public ssh keys in a json structure"""
+	f, tmp = tempfile.mkstemp()
+	os.close(f)
+	rc = True
+	data = json.loads(keys)
+	for i in data:
+		if "key" in i:
+			f = open(tmp, "w")
+			f.write(i["key"])
+			f.close()
+			if not valid(tmp, output):
 				rc = False
 	os.unlink(tmp)
 	return rc
@@ -107,7 +155,7 @@ def get_authkeypath():
 	return "%s/.ssh/authorized_keys" % home
 
 
-def get_url():
+def get_default_url():
 	# Default to the Launchpad URL, for legacy operation
 	default_url = "https://launchpad.net/~%s/+sshkeys"
 	# Allow for an override using the $URL environment variable
@@ -167,14 +215,20 @@ def main():
 	rc = 0
 	args = get_args()
 	output = get_output(args)
-	url = get_url()
+	default_url = get_default_url()
 	curl = configure_curl()
-	f, tmp = tempfile.mkstemp()
-	os.close(f)
 	# Loop over user id positional arguments
 	for i in args.user_id:
 		# Ensure the user id is url safe (quoted)
-		u = url % quote_plus(i)
+		if i.startswith("gh:"):
+			u = "https://api.github.com/users/%s/keys" % quote_plus(i.split("gh:")[1])
+			results_type = "json"
+		elif i.startswith("lp:"):
+			u = "https://launchpad.net/~%s/+sshkeys" % quote_plus(i.split("lp:")[1])
+			results_type = "raw"
+		else:
+			u = default_url % quote_plus(i)
+			results_type = "raw"
 		try:
 			# Attempt to do the curl fetch
 			curl.setopt(pycurl.URL, u)
@@ -182,39 +236,17 @@ def main():
 			curl.setopt(pycurl.WRITEFUNCTION, resp.write)
 			curl.perform()
 		except:
-			error("Unable to retrieve url [%s]" % u, tmp)
+			error("Unable to retrieve url [%s]" % u)
 		try:
-			# Write the output to a temporary file for validation
-			f = open(tmp, "w")
-			f.write("\n%s\n" % resp.getvalue())
-			f.close()
 			# Validate that each non-blank line in the tempfile are good ssh keys
-			if validate(tmp) == False:
+			if validate(resp.getvalue(), results_type, output) == False:
 				warn("Invalid keys at [%s]" % u)
 				rc += 1
 				continue
 		except:
-			error("Unable to validate keys from [%s]" % u, tmp)
-		try:
-			# Handle output
-			if args.output == "-":
-				# Print output to stdout
-				sys.stdout.write(resp.getvalue())
-			else:
-				# Print output to a file
-				try:
-					f = open(output, "a")
-					f.write("\n%s\n" % resp.getvalue())
-					f.close()
-				except:
-					error("Could not write to [%s]" % output, tmp)
-			# This user's key(s) look good!
-			info("Successfully authorized [%s]" % i)
-		except:
-			warn("Failed to retrieve key for [%s] from [%s]" % (i, u))
-			rc += 1
-	if os.path.exists(tmp):
-		os.unlink(tmp)
+			error("Unable to validate keys from [%s]" % u)
+		# This user's key(s) look valid!
+		info("Successfully authorized [%s]" % i)
 	sys.exit(rc)
 
 
