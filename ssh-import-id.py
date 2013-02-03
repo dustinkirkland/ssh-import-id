@@ -23,14 +23,21 @@
 
 import argparse
 import getopt
+import io
 import os
 import pycurl
 import string
-import StringIO
 import subprocess
 import sys
 import tempfile
-import urllib
+try:
+	# Python2
+	from urllib import quote_plus
+	from StringIO import StringIO
+except:
+	# Python3
+	from urllib.parse import quote_plus
+	from io import StringIO
 
 
 def error(msg):
@@ -62,8 +69,8 @@ def validate(keys):
 			f.close()
 			p = subprocess.Popen(["ssh-keygen", "-l", "-f", tmp], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			stdout, stderr = p.communicate()
-			sys.stderr.write(stdout)
-			sys.stderr.write(stderr)
+			sys.stderr.write(str(stdout))
+			sys.stderr.write(str(stderr))
 			if p.returncode != 0:
 				rc = False
 	os.unlink(tmp)
@@ -79,9 +86,9 @@ def get_authkeypath():
 		except:
 			error("Cannot get passwd entry")
 	if os.direxists("%s/.ssh" % home) == False:
-		os.makedirs("%s/.ssh" % home, 0700)
+		os.makedirs("%s/.ssh" % home, 0o700)
 	if os.path.exists("%s/.ssh/authorized_keys" % home) == False:
-		f = os.open("%s/.ssh/authorized_keys", os.O_WRONLY | os.O_CREAT, 0600, "w")
+		f = os.open("%s/.ssh/authorized_keys", os.O_WRONLY | os.O_CREAT, 0o600, "w")
 		os.close(f)
 	return "%s/.ssh/authorized_keys" % home
 
@@ -92,10 +99,13 @@ def get_url():
 	if url == None:
 		if os.path.exists("/etc/ssh/ssh_import_id"):
 			try:
-				conf = {}
-				execfile("/etc/ssh/ssh_import_id", conf)
-				if "URL" in conf:
-					url = conf["URL"]
+				gconf = {}
+				lconf = {}
+				with open("/etc/ssh/ssh_import_id") as f:
+					code = compile(f.read(), "/etc/ssh/ssh_import_id", 'exec')
+					exec(code, gconf, lconf)
+				if "URL" in gconf:
+					url = gconf["URL"]
 				else:
 					url = default_url
 			except:
@@ -125,10 +135,10 @@ curl.setopt(pycurl.SSL_VERIFYPEER, 1)
 curl.setopt(pycurl.SSL_VERIFYHOST, 2)
 curl.setopt(pycurl.CAINFO, "/etc/ssl/certs/ca-certificates.crt")
 for i in args.user_id:
-	u = url % urllib.quote_plus(i)
+	u = url % quote_plus(i)
 	try:
 		curl.setopt(pycurl.URL, u)
-		resp = StringIO.StringIO()
+		resp = StringIO()
 		curl.setopt(pycurl.WRITEFUNCTION, resp.write)
 		curl.perform()
 		f = open(tmp, "w")
@@ -147,9 +157,10 @@ for i in args.user_id:
 				f.close()
 			except:
 				error("Could not write to [%s]" % output)
-	except pycurl.error, e:
+		info("Successfully authorized [%s]" % i)
+	except:
 		warn("Failed to retrieve key for [%s] from [%s]" % (i, u))
 		rc += 1
-	info("Successfully authorized [%s]" % i)
-os.unlink(f)
+if os.path.exists(tmp):
+	os.unlink(tmp)
 sys.exit(rc)
