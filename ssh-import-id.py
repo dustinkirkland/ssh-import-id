@@ -25,23 +25,17 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import argparse
-import getopt
-import io
 import json
 import os
-import pycurl
-import string
 import subprocess
 import sys
 import tempfile
 try:
 	# Python2
 	from urllib import quote_plus
-	from StringIO import StringIO
 except (ImportError,):
 	# Python3
 	from urllib.parse import quote_plus
-	from io import StringIO
 
 
 def error(msg):
@@ -200,13 +194,17 @@ def get_output(args):
 	return output
 
 
-def configure_curl():
-	"""Create and configure a curl handler"""
-	curl = pycurl.Curl()
-	curl.setopt(pycurl.SSL_VERIFYPEER, 1)
-	curl.setopt(pycurl.SSL_VERIFYHOST, 2)
-	curl.setopt(pycurl.CAINFO, "/etc/ssl/certs/ca-certificates.crt")
-	return curl
+def wget(url):
+	"""Fetch data by url"""
+	# Would love to use native Python here, but pycurl is a mess, urllib and urllib2 don't check SSL certs, and requests is available everywhere yet
+	# So we're going to shell out and use good 'ole wget
+	p = subprocess.Popen(["wget", "--quiet", "-O", "-", url], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	stdout, stderr = p.communicate()
+	sys.stderr.write(stderr.decode('utf-8'))
+	if p.returncode == 0:
+		return stdout.decode('utf-8')
+	else:
+		error("Could not fetch URL [%s]" % url)
 
 
 def main():
@@ -216,7 +214,6 @@ def main():
 	args = get_args()
 	output = get_output(args)
 	default_url = get_default_url()
-	curl = configure_curl()
 	# Loop over user id positional arguments
 	for i in args.user_id:
 		# Ensure the user id is url safe (quoted)
@@ -230,16 +227,13 @@ def main():
 			u = default_url % quote_plus(i)
 			results_type = "raw"
 		try:
-			# Attempt to do the curl fetch
-			curl.setopt(pycurl.URL, u)
-			resp = StringIO()
-			curl.setopt(pycurl.WRITEFUNCTION, resp.write)
-			curl.perform()
+			# Attempt to fetch the url
+			results = wget(u)
 		except:
 			error("Unable to retrieve url [%s]" % u)
 		try:
 			# Validate that each non-blank line in the tempfile are good ssh keys
-			if validate(resp.getvalue(), results_type, output) == False:
+			if validate(results, results_type, output) == False:
 				warn("Invalid keys at [%s]" % u)
 				rc += 1
 				continue
