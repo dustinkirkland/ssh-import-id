@@ -1,0 +1,139 @@
+#!/usr/bin/env python
+# ssh-auth-id - Authorize SSH public keys from trusted online identities.
+# Copyright (c) 2013 Casey Marshall <casey.marshall@gmail.com>
+#
+# ssh-auth-id is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# ssh-auth-id is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with ssh-auth-id.  If not, see <http://www.gnu.org/licenses/>.
+
+import argparse
+import logging
+import os
+import stat
+import subprocess
+from subprocess import Popen
+import sys
+import tempfile
+
+DEFAULT_PROTO="gh"
+
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
+
+parser = argparse.ArgumentParser(description='Authorize SSH public keys from trusted online identities.')
+parser.add_argument('-o', '--output', metavar='FILE', help='Write output to file (default ~/.ssh/authorized_keys)')
+parser.add_argument('userids', nargs='+', metavar="USERID", help='User IDs to import')
+parser.options = None
+
+def die(msg):
+	"""
+	The only thing in Perl worth keeping.
+	"""
+	logging.error(msg)
+	os._exit(1)
+
+def key_fingerprint(fields):
+	"""
+	Get the fingerprint for an SSH public key.
+	Returns None if not valid key material.
+	"""
+	if not fields:
+		return None
+	if len(fields) < 3:
+		return None
+	if not str(fields[0]).startswith(str('ssh-')):
+		return None
+	tempfd, tempname = tempfile.mkstemp(
+			prefix='ssh-auth-key-check', suffix='.pub')
+	with os.fdopen(tempfd, "w") as tempf:
+		tempf.write(" ".join(fields))
+		tempf.write("\n")
+	keygen_proc = Popen(['ssh-keygen', '-l', '-f', tempname],
+			stdout=subprocess.PIPE)
+	keygen_out, _ = keygen_proc.communicate(None)
+	if keygen_proc.returncode:
+		# Non-zero RC: probably not a public key
+		return None
+	os.unlink(tempname)
+	keygen_fields = keygen_out.split()
+	if not keygen_fields or len(keygen_fields) < 2:
+		# Empty output?
+		return None
+	keylen, fp = keygen_out.split()[:2]
+	return fp.decode('utf-8')
+
+def import_keys(proto, username):
+	"""
+	Import keys from service at 'proto' for 'username',
+	appending to output file.
+	"""
+	# Map out which keys we already have, so we don't keep
+	# appending the same ones.
+	have_keys = set()
+	# Locate output file
+	output_file = parser.options.output or os.path.join(
+			os.getenv("HOME"), ".ssh", "authorized_keys")
+	if os.path.exists(output_file):
+		with open(output_file, "r") as f:
+			for line in f.readlines():
+				fields = line.split()
+				ssh_fp = key_fingerprint(fields)
+				if ssh_fp:
+					have_keys.add(ssh_fp)
+	elif os.path.dirname(output_file) and not os.path.isdir(os.path.dirname(output_file)):
+		die("Parent directory not found for output [%s]" % (output_file))
+	logging.debug("Already have SSH public keys: [%s]" % (' '.join(have_keys)))
+	# Execute the protocol handler, get the keys from
+	# whatever service that maps out to.
+	proto_cmd_path = os.path.join(os.path.dirname(sys.argv[0]),
+			"%s-%s" % (os.path.basename(sys.argv[0]), proto))
+	if not os.path.isfile(proto_cmd_path) or not os.access(proto_cmd_path, os.X_OK):
+		die("ssh-auth-id protocol handler %s: not found or cannot execute" % (
+				proto_cmd_path))
+	proc = Popen([proto_cmd_path, username], stdout=subprocess.PIPE)
+	proc_output, _ = proc.communicate(None)
+	if proc.returncode:
+		raise Exception("Error executing protocol helper [%s]" % proto_cmd_path)
+	# Protocol handler should output SSH keys, one per line.
+	result = []
+	with open(output_file, "a+") as f:
+		for line in proc_output.splitlines():
+			# Validate/clean-up key text
+			line = line.decode('utf-8').strip()
+			fields = line.split()
+			ssh_fp = key_fingerprint(fields)
+			if ssh_fp:
+				if ssh_fp in have_keys:
+					logging.info("Already authorized [%s]" % (ssh_fp))
+				else:
+					result.append(fields)
+					f.write(" ".join(fields[:3]))
+					f.write('\n')
+					logging.info("Authorized key [%s %s]" % (ssh_fp, fields[2]))
+	return result
+
+if __name__ == '__main__':
+	try:
+		parser.options = parser.parse_args()
+		keys = []
+		for userid in parser.options.userids:
+			user_pieces = userid.split(':')
+			if len(user_pieces) == 2:
+				proto, username = user_pieces
+			elif len(user_pieces) == 1:
+				proto, username = DEFAULT_PROTO, userid
+			else:
+				die("Invalid user ID: [%s]" % (userid))
+			keys.extend(import_keys(proto, username))
+		logging.info("Authorized [%d] new SSH keys" % (len(keys)))
+	except (Exception,):
+		e = sys.exc_info()[1]
+		die("%s" % (str(e)))
+	os._exit(0)

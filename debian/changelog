@@ -1,5 +1,6 @@
 ssh-import-id (2.14) unreleased; urgency=low
 
+  [ Dustin Kirkland ]
   * ssh-import-id.py:
     - initial port to Python2
     - ported to Python3
@@ -8,6 +9,12 @@ ssh-import-id (2.14) unreleased; urgency=low
     - add early support for gh:username (github) as well as lp:username
       (launchpad)
     - drop pycurl in favor of a more portable, reliable shell out to wget
+
+  [ Casey Marshall and Dustin Kirkland ]
+  * === added directory bin, bin/ssh-auth-id, bin/ssh-auth-id-gh,
+    bin/ssh-auth-id-lp, LICENSE, README.md, setup.py:
+    - import Casey's subcommands implementation from his ssh-auth-id fork
+      on github
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 23 Oct 2012 17:32:00 -0500
 
