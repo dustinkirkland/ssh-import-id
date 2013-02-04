@@ -1,0 +1,40 @@
+#!/usr/bin/env python
+# ssh-auth-id - Authorize SSH public keys from trusted online identities.
+# Copyright (c) 2013 Casey Marshall <casey.marshall@gmail.com>
+#
+# ssh-auth-id is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# ssh-auth-id is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with ssh-auth-id.  If not, see <http://www.gnu.org/licenses/>.
+
+import os
+import requests
+import sys
+try:
+	from urllib import quote_plus
+except (ImportError,):
+	from urllib.parse import quote_plus
+
+if __name__ == '__main__':
+	if not sys.argv[:1]:
+		sys.stderr.write("Usage: %s <launchpad-id>\n" % (sys.argv[0]))
+		os._exit(1)
+	lpid = sys.argv[1]
+	try:
+		url = "https://launchpad.net/~%s/+sshkeys" % (quote_plus(lpid))
+		resp = requests.get(url, verify=True)
+		sys.stdout.write(str(resp.text))
+		sys.stdout.write("\n")
+		sys.stdout.flush()
+		os._exit(0)
+	except (Exception,):
+		e = sys.exc_info()[1]
+		sys.stderr.write("ERROR: %s\n" % (str(e)))
+		os._exit(1)
