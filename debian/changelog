@@ -9,6 +9,10 @@ ssh-import-id (2.14) unreleased; urgency=low
     - add early support for gh:username (github) as well as lp:username
       (launchpad)
     - drop pycurl in favor of a more portable, reliable shell out to wget
+  * bin/ssh-auth-id => bin/ssh-import-id, bin/ssh-auth-id-gh => bin/ssh-
+    import-id-gh, bin/ssh-auth-id-lp => bin/ssh-import-id-lp, README.md,
+    setup.py:
+    - rename Casey's ssh-auth-id command to ssh-import-id with this merge
 
   [ Casey Marshall and Dustin Kirkland ]
   * === added directory bin, bin/ssh-auth-id, bin/ssh-auth-id-gh,
