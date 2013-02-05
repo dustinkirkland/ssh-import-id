@@ -1,6 +1,7 @@
 ssh-import-id (3.3) unreleased; urgency=low
 
-  * UNRELEASED
+  * debian/control, debian/rules:
+    - get this building on 10.04/lucid, borrowed build logic from swift
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 05 Feb 2013 11:53:47 -0600
 
