@@ -1,4 +1,4 @@
-ssh-import-id (3.4) unreleased; urgency=low
+ssh-import-id (3.4-0ubuntu1) raring; urgency=low
 
   * setup.py:
     - bump version
@@ -8,7 +8,7 @@ ssh-import-id (3.4) unreleased; urgency=low
   * bin/ssh-import-id-lp:
     - fix pep8 warning
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 05 Feb 2013 12:42:25 -0600
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 05 Feb 2013 17:37:53 -0600
 
 ssh-import-id (3.3-0ubuntu1) raring; urgency=low
 
