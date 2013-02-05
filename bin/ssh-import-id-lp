@@ -32,37 +32,38 @@ except (ImportError,):
 
 
 def wget(url):
-        """Fetch data by url"""
-        # We would *love* to use native Python here, but:
+	"""Fetch data by url"""
+	# We would *love* to use native Python here, but:
 	# - pycurl is a mess
 	# - urllib and urllib2 don't validate SSL certs
 	# - requests is not available everywhere yet
-        # So we're going to shell out and use good 'ole wget
-        p = subprocess.Popen(["wget", "--quiet", "-O", "-", url], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout, stderr = p.communicate()
-        sys.stderr.write(stderr.decode('utf-8'))
-        if p.returncode == 0:
-                return stdout.decode('utf-8')
-        else:
-                error("Could not fetch URL [%s]" % url)
+	# So we're going to shell out and use good 'ole wget
+	p = subprocess.Popen(["wget", "--quiet", "-O", "-", url], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	stdout, stderr = p.communicate()
+	sys.stderr.write(stderr.decode('utf-8'))
+	if p.returncode == 0:
+		return stdout.decode('utf-8')
+	else:
+		raise Exception("Could not fetch URL [%s]" % url)
 
 
 if __name__ == '__main__':
 	if not sys.argv[:1]:
 		sys.stderr.write("Usage: %s <launchpad-id>\n" % (sys.argv[0]))
 		os._exit(1)
-	lpid = sys.argv[1]
-	try:
-		url = "https://launchpad.net/~%s/+sshkeys" % (quote_plus(lpid))
-		if USE_WGET:
-			text = wget(url)
-		else:
-			text = requests.get(url, verify=True).text
-		sys.stdout.write(str(text))
+	for lpid in sys.argv[1:]:
+		try:
+			url = "https://launchpad.net/~%s/+sshkeys" % (quote_plus(lpid))
+			if USE_WGET:
+				text = wget(url)
+			else:
+				text = requests.get(url, verify=True).text
+			sys.stdout.write(str(text))
+			sys.stdout.write("\n")
+			sys.stdout.flush()
+		except (Exception,):
+			e = sys.exc_info()[1]
+			sys.stderr.write("ERROR: %s\n" % (str(e)))
+			os._exit(1)
 		sys.stdout.write("\n")
-		sys.stdout.flush()
-		os._exit(0)
-	except (Exception,):
-		e = sys.exc_info()[1]
-		sys.stderr.write("ERROR: %s\n" % (str(e)))
-		os._exit(1)
+	os._exit(0)
