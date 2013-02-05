@@ -53,8 +53,6 @@ def key_fingerprint(fields):
 		return None
 	if len(fields) < 3:
 		return None
-	if not str(fields[0]).startswith(str('ssh-')):
-		return None
 	tempfd, tempname = tempfile.mkstemp(prefix='ssh-auth-key-check', suffix='.pub')
 	with os.fdopen(tempfd, "w") as tempf:
 		tempf.write(" ".join(fields))
