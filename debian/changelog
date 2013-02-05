@@ -1,9 +1,9 @@
-ssh-import-id (3.2) unreleased; urgency=low
+ssh-import-id (3.2-0ubuntu1) raring; urgency=low
 
   * debian/control:
     - need setuptools for compilation
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 05 Feb 2013 10:05:23 -0600
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 05 Feb 2013 11:53:45 -0600
 
 ssh-import-id (3.1-0ubuntu1) raring; urgency=low
 
