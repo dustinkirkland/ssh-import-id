@@ -43,6 +43,11 @@ ssh-import-id (3.0) unreleased; urgency=low
     - port conf file from shell to JSON syntax
     - add a postinst script to smooth migration from ssh-import-id < 3.0
     - ignore errors in postinst script (nothing more we can do, really)
+  * bin/ssh-import-id-gh, bin/ssh-import-id-lp, debian/postinst,
+    ssh_import_id:
+    - use wget --no-verbose rather than --quiet, so that error messages from
+      wget (such as SSL cert errors) get propagated
+    - use json syntax for configuration file
 
   [ Casey Marshall and Dustin Kirkland ]
   * === added directory bin, bin/ssh-auth-id, bin/ssh-auth-id-gh,

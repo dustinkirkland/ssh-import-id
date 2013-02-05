@@ -43,7 +43,7 @@ if __name__ == '__main__':
 				text = requests.get(url, verify=True).text
 			else:
 				# Fall back to using good 'ole ubiquitous wget
-				p = subprocess.Popen(["wget", "--quiet", "-O", "-", url], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+				p = subprocess.Popen(["wget", "--no-verbose", "-O", "-", url], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 				stdout, stderr = p.communicate()
 				sys.stderr.write(stderr.decode('utf-8'))
 				if p.returncode == 0:
