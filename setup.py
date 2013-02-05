@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#
 # ssh-import-id - Authorize SSH public keys from trusted online identities.
 # Copyright (c) 2013 Casey Marshall <casey.marshall@gmail.com>
 #
@@ -16,12 +17,4 @@
 
 from setuptools import setup
 
-setup(name='ssh-import-id',
-	version='1.0.1',
-	description='Authorize SSH public keys from trusted online identities',
-	author='Casey Marshall',
-	author_email='casey.marshall@gmail.com',
-	url='http://github.com/cmars/ssh-import-id',
-	scripts=['bin/ssh-import-id', 'bin/ssh-import-id-gh', 'bin/ssh-import-id-lp'],
-	install_requires=["argparse", "Requests>=1.1.0"],
-)
+setup(name='ssh-import-id', version='2.14', description='Authorize SSH public keys from trusted online identities', author='Casey Marshall, Dustin Kirkland', author_email='casey.marshall@gmail.com, dustin.kirkland@gmail.com', url='https://launchpad.net/ssh-import-id', scripts=['bin/ssh-import-id', 'bin/ssh-import-id-gh', 'bin/ssh-import-id-lp'], install_requires=["argparse", "Requests>=1.1.0"])
