@@ -1,6 +1,7 @@
 ssh-import-id (3.4) unreleased; urgency=low
 
-  * UNRELEASED
+  * setup.py:
+    - bump version
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 05 Feb 2013 12:42:25 -0600
 
