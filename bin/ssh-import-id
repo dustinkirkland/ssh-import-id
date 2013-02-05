@@ -77,7 +77,7 @@ def open_output(name, mode='a+'):
 	Open output for writing, supporting either stdout or a filename
 	"""
 	if name == '-':
-		return os.fdopen(1, 'w')
+		return False
 	else:
 		return open(name, mode)
 
@@ -115,22 +115,30 @@ def import_keys(proto, username):
 		raise Exception("Error executing protocol helper [%s]" % proto_cmd_path)
 	# Protocol handler should output SSH keys, one per line.
 	result = []
-	with open_output(output_file, "a+") as f:
-		for line in proc_output.splitlines():
-			# Validate/clean-up key text
-			line = line.decode('utf-8').strip()
-			fields = line.split()
-			ssh_fp = key_fingerprint(fields)
-			if ssh_fp:
-				fp_tuple = ' '.join([ssh_fp[0], ssh_fp[1], ssh_fp[3]])
-				if fp_tuple in have_keys:
-					logging.info("Already authorized %s" % (ssh_fp))
-				else:
-					result.append(fields)
+	f = open_output(output_file, "a+")
+	for line in proc_output.splitlines():
+		# Validate/clean-up key text
+		line = line.decode('utf-8').strip()
+		fields = line.split()
+		ssh_fp = key_fingerprint(fields)
+		if ssh_fp:
+			fp_tuple = ' '.join([ssh_fp[0], ssh_fp[1], ssh_fp[3]])
+			if fp_tuple in have_keys:
+				logging.info("Already authorized %s" % (ssh_fp))
+			else:
+				result.append(fields)
+				if f:
 					# Print to file
 					f.write(" ".join(fields[:3]))
 					f.write('\n')
-					logging.info("Authorized key %s" % (ssh_fp))
+				else:
+					# Print to stdout
+					sys.stdout.write(" ".join(fields[:3]))
+					sys.stdout.write('\n')
+					sys.stdout.flush()
+				logging.info("Authorized key %s" % (ssh_fp))
+	if f:
+		f.close()
 	return result
 
 

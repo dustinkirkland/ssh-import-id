@@ -48,6 +48,8 @@ ssh-import-id (3.0) unreleased; urgency=low
     - use wget --no-verbose rather than --quiet, so that error messages from
       wget (such as SSL cert errors) get propagated
     - use json syntax for configuration file
+  * bin/ssh-import-id:
+    - stdout file descriptor cannot be opened multiple times cleanly
 
   [ Casey Marshall and Dustin Kirkland ]
   * === added directory bin, bin/ssh-auth-id, bin/ssh-auth-id-gh,
