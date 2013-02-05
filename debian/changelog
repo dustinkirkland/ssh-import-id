@@ -2,6 +2,9 @@ ssh-import-id (3.4) unreleased; urgency=low
 
   * setup.py:
     - bump version
+  * debian/control, debian/rules:
+    - run pep8 at build for python syntax checking
+    - still trying to fix 10.04 build
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 05 Feb 2013 12:42:25 -0600
 
