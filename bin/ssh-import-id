@@ -22,7 +22,6 @@ import logging
 import os
 import stat
 import subprocess
-from subprocess import Popen
 import sys
 import tempfile
 
@@ -57,7 +56,7 @@ def key_fingerprint(fields):
 	with os.fdopen(tempfd, "w") as tempf:
 		tempf.write(" ".join(fields))
 		tempf.write("\n")
-	keygen_proc = Popen(['ssh-keygen', '-l', '-f', tempname], stdout=subprocess.PIPE)
+	keygen_proc = subprocess.Popen(['ssh-keygen', '-l', '-f', tempname], stdout=subprocess.PIPE)
 	keygen_out, _ = keygen_proc.communicate(None)
 	if keygen_proc.returncode:
 		# Non-zero RC: probably not a public key
@@ -96,7 +95,7 @@ def import_keys(proto, username):
 	proto_cmd_path = os.path.join(os.path.dirname(sys.argv[0]), "%s-%s" % (os.path.basename(sys.argv[0]), proto))
 	if not os.path.isfile(proto_cmd_path) or not os.access(proto_cmd_path, os.X_OK):
 		die("ssh-import-id protocol handler %s: not found or cannot execute" % (proto_cmd_path))
-	proc = Popen([proto_cmd_path, username], stdout=subprocess.PIPE)
+	proc = subprocess.Popen([proto_cmd_path, username], stdout=subprocess.PIPE)
 	proc_output, _ = proc.communicate(None)
 	if proc.returncode:
 		raise Exception("Error executing protocol helper [%s]" % proto_cmd_path)
