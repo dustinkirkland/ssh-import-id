@@ -1,6 +1,8 @@
-ssh-import-id (2.14) unreleased; urgency=low
+ssh-import-id (3.0) unreleased; urgency=low
 
   [ Dustin Kirkland ]
+  * setup.py:
+    - bump major version to 3.x since this is a complete rewrite in Python
   * ssh-import-id.py:
     - initial port to Python2
     - ported to Python3
