@@ -2,14 +2,14 @@ Source: ssh-import-id
 Section: misc
 Priority: extra
 Maintainer: Dustin Kirkland <kirkland@ubuntu.com>
-Build-Depends: debhelper (>= 7)
+Build-Depends: debhelper (>= 7), python
 Standards-Version: 3.9.3
 Homepage: http://launchpad.net/ssh-import-id
 
 Package: ssh-import-id
 Architecture: all
-Depends: ${misc:Depends}, wget, ca-certificates, openssh-client
-Recommends: openssh-server
+Depends: ${misc:Depends}, ${python:Depends}, wget, ca-certificates, openssh-client
+Recommends: openssh-server, python-requests
 Breaks: ssh-import
 Replaces: ssh-import
 Description: securely retrieve an SSH public key and install it locally

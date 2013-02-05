@@ -26,6 +26,11 @@ ssh-import-id (3.0) unreleased; urgency=low
     - support wget as a fallback, when python requests module is not available
     - loop over each id in argv
     - import subprocess
+  * === added directory attic, debian/control, ssh-import-id =>
+    attic/ssh-import-id, ssh-import-id.py => attic/ssh-import-id.py:
+    - relocate the old shell utility and the monolithic python utility to
+      the attic for now; these should be removed entirely from the source
+      tree in due time
 
   [ Casey Marshall and Dustin Kirkland ]
   * === added directory bin, bin/ssh-auth-id, bin/ssh-auth-id-gh,
