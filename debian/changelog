@@ -42,6 +42,7 @@ ssh-import-id (3.0) unreleased; urgency=low
       file
     - port conf file from shell to JSON syntax
     - add a postinst script to smooth migration from ssh-import-id < 3.0
+    - ignore errors in postinst script (nothing more we can do, really)
 
   [ Casey Marshall and Dustin Kirkland ]
   * === added directory bin, bin/ssh-auth-id, bin/ssh-auth-id-gh,

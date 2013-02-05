@@ -1,6 +1,8 @@
 #!/bin/sh
 
+set -e
+
 # Migrate from shell syntax configuration file to JSON
-sed -i -e "s/^URL=\"\(.*\)\"/{\"URL\": \"\1\"}/" /etc/ssh/ssh_import_id
+sed -i -e "s/^URL=\"\(.*\)\"/{\"URL\": \"\1\"}/" /etc/ssh/ssh_import_id || true
 
 #DEBHELPER#
