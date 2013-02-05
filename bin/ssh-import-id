@@ -1,6 +1,9 @@
 #!/usr/bin/env python
+#
 # ssh-import-id - Authorize SSH public keys from trusted online identities.
+#
 # Copyright (c) 2013 Casey Marshall <casey.marshall@gmail.com>
+# Copyright (c) 2013 Dustin Kirkland <dustin.kirkland@gmail.com>
 #
 # ssh-import-id is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,7 +26,7 @@ from subprocess import Popen
 import sys
 import tempfile
 
-DEFAULT_PROTO="gh"
+DEFAULT_PROTO = "lp"
 
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
 
@@ -32,12 +35,14 @@ parser.add_argument('-o', '--output', metavar='FILE', help='Write output to file
 parser.add_argument('userids', nargs='+', metavar="USERID", help='User IDs to import')
 parser.options = None
 
+
 def die(msg):
 	"""
 	The only thing in Perl worth keeping.
 	"""
 	logging.error(msg)
 	os._exit(1)
+
 
 def key_fingerprint(fields):
 	"""
@@ -50,13 +55,11 @@ def key_fingerprint(fields):
 		return None
 	if not str(fields[0]).startswith(str('ssh-')):
 		return None
-	tempfd, tempname = tempfile.mkstemp(
-			prefix='ssh-auth-key-check', suffix='.pub')
+	tempfd, tempname = tempfile.mkstemp(prefix='ssh-auth-key-check', suffix='.pub')
 	with os.fdopen(tempfd, "w") as tempf:
 		tempf.write(" ".join(fields))
 		tempf.write("\n")
-	keygen_proc = Popen(['ssh-keygen', '-l', '-f', tempname],
-			stdout=subprocess.PIPE)
+	keygen_proc = Popen(['ssh-keygen', '-l', '-f', tempname], stdout=subprocess.PIPE)
 	keygen_out, _ = keygen_proc.communicate(None)
 	if keygen_proc.returncode:
 		# Non-zero RC: probably not a public key
@@ -69,6 +72,7 @@ def key_fingerprint(fields):
 	keylen, fp = keygen_out.split()[:2]
 	return fp.decode('utf-8')
 
+
 def import_keys(proto, username):
 	"""
 	Import keys from service at 'proto' for 'username',
@@ -78,8 +82,7 @@ def import_keys(proto, username):
 	# appending the same ones.
 	have_keys = set()
 	# Locate output file
-	output_file = parser.options.output or os.path.join(
-			os.getenv("HOME"), ".ssh", "authorized_keys")
+	output_file = parser.options.output or os.path.join(os.getenv("HOME"), ".ssh", "authorized_keys")
 	if os.path.exists(output_file):
 		with open(output_file, "r") as f:
 			for line in f.readlines():
@@ -92,11 +95,9 @@ def import_keys(proto, username):
 	logging.debug("Already have SSH public keys: [%s]" % (' '.join(have_keys)))
 	# Execute the protocol handler, get the keys from
 	# whatever service that maps out to.
-	proto_cmd_path = os.path.join(os.path.dirname(sys.argv[0]),
-			"%s-%s" % (os.path.basename(sys.argv[0]), proto))
+	proto_cmd_path = os.path.join(os.path.dirname(sys.argv[0]), "%s-%s" % (os.path.basename(sys.argv[0]), proto))
 	if not os.path.isfile(proto_cmd_path) or not os.access(proto_cmd_path, os.X_OK):
-		die("ssh-import-id protocol handler %s: not found or cannot execute" % (
-				proto_cmd_path))
+		die("ssh-import-id protocol handler %s: not found or cannot execute" % (proto_cmd_path))
 	proc = Popen([proto_cmd_path, username], stdout=subprocess.PIPE)
 	proc_output, _ = proc.communicate(None)
 	if proc.returncode:
@@ -118,6 +119,7 @@ def import_keys(proto, username):
 					f.write('\n')
 					logging.info("Authorized key [%s %s]" % (ssh_fp, fields[2]))
 	return result
+
 
 if __name__ == '__main__':
 	try:
