@@ -41,6 +41,7 @@ ssh-import-id (3.0) unreleased; urgency=low
       + this is essential to the security of ssh-import-id, for key fingerprint
         collision avoidance
     - use a helper function to print to stdout just as easily a filename
+    - identify keys by their tuple, [length, hash, type]
 
   [ Casey Marshall and Dustin Kirkland ]
   * === added directory bin, bin/ssh-auth-id, bin/ssh-auth-id-gh,
