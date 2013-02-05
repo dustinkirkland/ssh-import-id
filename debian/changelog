@@ -37,6 +37,11 @@ ssh-import-id (3.0) unreleased; urgency=low
     - identify keys by their tuple, [length, hash, type]
   * debian/links, README.md, ssh-import-id.1:
     - update documentation
+  * bin/ssh-import-id-lp, debian/postinst, ssh_import_id:
+    - support URL environment variable and system-wide URL definition in conf
+      file
+    - port conf file from shell to JSON syntax
+    - add a postinst script to smooth migration from ssh-import-id < 3.0
 
   [ Casey Marshall and Dustin Kirkland ]
   * === added directory bin, bin/ssh-auth-id, bin/ssh-auth-id-gh,
