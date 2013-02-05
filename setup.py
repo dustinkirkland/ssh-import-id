@@ -17,4 +17,4 @@
 
 from setuptools import setup
 
-setup(name='ssh-import-id', version='3.0', description='Authorize SSH public keys from trusted online identities', author='Casey Marshall, Dustin Kirkland', author_email='casey.marshall@gmail.com, dustin.kirkland@gmail.com', url='https://launchpad.net/ssh-import-id', scripts=['bin/ssh-import-id', 'bin/ssh-import-id-gh', 'bin/ssh-import-id-lp'], install_requires=["argparse", "Requests>=1.1.0"])
+setup(name='ssh-import-id', version='3.1', description='Authorize SSH public keys from trusted online identities', author='Casey Marshall, Dustin Kirkland', author_email='casey.marshall@gmail.com, dustin.kirkland@gmail.com', url='https://launchpad.net/ssh-import-id', scripts=['bin/ssh-import-id', 'bin/ssh-import-id-gh', 'bin/ssh-import-id-lp'], install_requires=["argparse", "Requests>=1.1.0"])
