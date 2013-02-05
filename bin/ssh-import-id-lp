@@ -39,7 +39,7 @@ if __name__ == '__main__':
 	for lpid in sys.argv[1:]:
 		try:
 			url = os.getenv("URL", None)
-			if url == None:
+			if url is None:
 				try:
 					conf = json.loads(open("/etc/ssh/ssh_import_id").read())
 					url = conf.get("URL", None).decode("utf-8") % (quote_plus(lpid))
@@ -47,7 +47,7 @@ if __name__ == '__main__':
 					raise Exception("Ensure that URL is defined in [/etc/ssh/ssh_import_id] is in JSON syntax")
 			else:
 				url = os.getenv("URL", None) % (quote_plus(lpid))
-			if url == None:
+			if url is None:
 				url = "https://launchpad.net/~%s/+sshkeys" % (quote_plus(lpid))
 			if REQUESTS:
 				text = requests.get(url, verify=True).text
