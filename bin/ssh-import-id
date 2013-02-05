@@ -72,6 +72,16 @@ def key_fingerprint(fields):
 	return out
 
 
+def open_output(name, mode='a+'):
+	"""
+	Open output for writing, supporting either stdout or a filename
+	"""
+	if name == '-':
+		return os.fdopen(1, 'w')
+	else:
+		return open(name, mode)
+
+
 def import_keys(proto, username):
 	"""
 	Import keys from service at 'proto' for 'username',
@@ -103,30 +113,21 @@ def import_keys(proto, username):
 		raise Exception("Error executing protocol helper [%s]" % proto_cmd_path)
 	# Protocol handler should output SSH keys, one per line.
 	result = []
-	if output_file != "-":
-		f = open(output_file, "a+")
-	for line in proc_output.splitlines():
-		# Validate/clean-up key text
-		line = line.decode('utf-8').strip()
-		fields = line.split()
-		ssh_fp = key_fingerprint(fields)
-		if ssh_fp:
-			if ssh_fp[1] in have_keys:
-				logging.info("Already authorized %s" % (ssh_fp))
-			else:
-				result.append(fields)
-				if output_file != "-":
+	with open_output(output_file, "a+") as f:
+		for line in proc_output.splitlines():
+			# Validate/clean-up key text
+			line = line.decode('utf-8').strip()
+			fields = line.split()
+			ssh_fp = key_fingerprint(fields)
+			if ssh_fp:
+				if ssh_fp[1] in have_keys:
+					logging.info("Already authorized %s" % (ssh_fp))
+				else:
+					result.append(fields)
 					# Print to file
 					f.write(" ".join(fields[:3]))
 					f.write('\n')
-				else:
-					# Print to stdout
-					sys.stdout.write(" ".join(fields[:3]))
-					sys.stdout.write("\n")
-					sys.stdout.flush()
-				logging.info("Authorized key %s" % (ssh_fp))
-	if output_file != "-":
-		f.close()
+					logging.info("Authorized key %s" % (ssh_fp))
 	return result
 
 
