@@ -5,6 +5,8 @@ ssh-import-id (3.4) unreleased; urgency=low
   * debian/control, debian/rules:
     - run pep8 at build for python syntax checking
     - still trying to fix 10.04 build
+  * bin/ssh-import-id-lp:
+    - fix pep8 warning
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 05 Feb 2013 12:42:25 -0600
 
