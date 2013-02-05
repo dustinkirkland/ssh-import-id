@@ -33,6 +33,8 @@ ssh-import-id (3.0) unreleased; urgency=low
       tree in due time
   * debian/install:
     - remove binaries from the install, let setup.py handle these for us
+  * bin/ssh-import-id:
+    - support -o|--output - for stdout
 
   [ Casey Marshall and Dustin Kirkland ]
   * === added directory bin, bin/ssh-auth-id, bin/ssh-auth-id-gh,
