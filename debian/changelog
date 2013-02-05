@@ -40,6 +40,7 @@ ssh-import-id (3.0) unreleased; urgency=low
     - print all parts of the fingerprint in info messages
       + this is essential to the security of ssh-import-id, for key fingerprint
         collision avoidance
+    - use a helper function to print to stdout just as easily a filename
 
   [ Casey Marshall and Dustin Kirkland ]
   * === added directory bin, bin/ssh-auth-id, bin/ssh-auth-id-gh,
