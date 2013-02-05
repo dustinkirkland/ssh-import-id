@@ -1,4 +1,4 @@
-ssh-import-id (3.0) unreleased; urgency=low
+ssh-import-id (3.0-0ubuntu1) raring; urgency=low
 
   [ Dustin Kirkland ]
   * setup.py:
@@ -57,7 +57,7 @@ ssh-import-id (3.0) unreleased; urgency=low
     - import Casey's subcommands implementation from his ssh-auth-id fork
       on github
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 23 Oct 2012 17:32:00 -0500
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 05 Feb 2013 01:38:31 -0600
 
 ssh-import-id (2.13-0ubuntu1) raring; urgency=low
 
