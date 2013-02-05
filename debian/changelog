@@ -17,6 +17,10 @@ ssh-import-id (2.14) unreleased; urgency=low
     setup.py:
     - get these pep8 clean with
        pep8 --verbose --repeat --ignore W191,E501
+  * bin/ssh-import-id:
+    - drop the "starts with ssh-" check
+    - bad assumption, since my ecdsa key starts with "ecdsa-sha2-nistp256"
+    - if it's a bad key, then ssh-keygen -l -f will shake that out
 
   [ Casey Marshall and Dustin Kirkland ]
   * === added directory bin, bin/ssh-auth-id, bin/ssh-auth-id-gh,
