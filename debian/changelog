@@ -35,6 +35,11 @@ ssh-import-id (3.0) unreleased; urgency=low
     - remove binaries from the install, let setup.py handle these for us
   * bin/ssh-import-id:
     - support -o|--output - for stdout
+    - return all parts of the fingerprint on validation (size, hash, name, type)
+    - index into the fingerprint for the hash
+    - print all parts of the fingerprint in info messages
+      + this is essential to the security of ssh-import-id, for key fingerprint
+        collision avoidance
 
   [ Casey Marshall and Dustin Kirkland ]
   * === added directory bin, bin/ssh-auth-id, bin/ssh-auth-id-gh,
