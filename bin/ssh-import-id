@@ -98,7 +98,9 @@ def import_keys(proto, username):
 				fields = line.split()
 				ssh_fp = key_fingerprint(fields)
 				if ssh_fp:
-					have_keys.add(ssh_fp[1])
+					# key is uniquely identified by the tuple [length, hash, type]]
+					fp_tuple = ' '.join([ssh_fp[0], ssh_fp[1], ssh_fp[3]])
+					have_keys.add(fp_tuple)
 	elif os.path.dirname(output_file) and not os.path.isdir(os.path.dirname(output_file)):
 		die("Parent directory not found for output [%s]" % (output_file))
 	logging.debug("Already have SSH public keys: [%s]" % (' '.join(have_keys)))
@@ -120,7 +122,8 @@ def import_keys(proto, username):
 			fields = line.split()
 			ssh_fp = key_fingerprint(fields)
 			if ssh_fp:
-				if ssh_fp[1] in have_keys:
+				fp_tuple = ' '.join([ssh_fp[0], ssh_fp[1], ssh_fp[3]])
+				if fp_tuple in have_keys:
 					logging.info("Already authorized %s" % (ssh_fp))
 				else:
 					result.append(fields)
