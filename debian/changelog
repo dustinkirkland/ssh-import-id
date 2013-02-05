@@ -23,6 +23,7 @@ ssh-import-id (2.14) unreleased; urgency=low
     - if it's a bad key, then ssh-keygen -l -f will shake that out
     - support wget as a fallback, when python requests module is not available
     - loop over each id in argv
+    - import subprocess
 
   [ Casey Marshall and Dustin Kirkland ]
   * === added directory bin, bin/ssh-auth-id, bin/ssh-auth-id-gh,
