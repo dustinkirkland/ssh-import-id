@@ -66,8 +66,10 @@ def key_fingerprint(fields):
 	if not keygen_fields or len(keygen_fields) < 2:
 		# Empty output?
 		return None
-	keylen, fp = keygen_out.split()[:2]
-	return fp.decode('utf-8')
+	out = []
+	for k in keygen_out.split():
+		out.append(str(k.decode('utf-8').strip()))
+	return out
 
 
 def import_keys(proto, username):
@@ -86,7 +88,7 @@ def import_keys(proto, username):
 				fields = line.split()
 				ssh_fp = key_fingerprint(fields)
 				if ssh_fp:
-					have_keys.add(ssh_fp)
+					have_keys.add(ssh_fp[1])
 	elif os.path.dirname(output_file) and not os.path.isdir(os.path.dirname(output_file)):
 		die("Parent directory not found for output [%s]" % (output_file))
 	logging.debug("Already have SSH public keys: [%s]" % (' '.join(have_keys)))
@@ -109,8 +111,8 @@ def import_keys(proto, username):
 		fields = line.split()
 		ssh_fp = key_fingerprint(fields)
 		if ssh_fp:
-			if ssh_fp in have_keys:
-				logging.info("Already authorized [%s]" % (ssh_fp))
+			if ssh_fp[1] in have_keys:
+				logging.info("Already authorized %s" % (ssh_fp))
 			else:
 				result.append(fields)
 				if output_file != "-":
@@ -122,7 +124,7 @@ def import_keys(proto, username):
 					sys.stdout.write(" ".join(fields[:3]))
 					sys.stdout.write("\n")
 					sys.stdout.flush()
-				logging.info("Authorized key [%s %s]" % (ssh_fp, fields[2]))
+				logging.info("Authorized key %s" % (ssh_fp))
 	if output_file != "-":
 		f.close()
 	return result
