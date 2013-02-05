@@ -31,6 +31,8 @@ ssh-import-id (3.0) unreleased; urgency=low
     - relocate the old shell utility and the monolithic python utility to
       the attic for now; these should be removed entirely from the source
       tree in due time
+  * debian/install:
+    - remove binaries from the install, let setup.py handle these for us
 
   [ Casey Marshall and Dustin Kirkland ]
   * === added directory bin, bin/ssh-auth-id, bin/ssh-auth-id-gh,
