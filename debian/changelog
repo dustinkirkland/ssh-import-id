@@ -42,6 +42,8 @@ ssh-import-id (3.0) unreleased; urgency=low
         collision avoidance
     - use a helper function to print to stdout just as easily a filename
     - identify keys by their tuple, [length, hash, type]
+  * debian/links, README.md, ssh-import-id.1:
+    - update documentation
 
   [ Casey Marshall and Dustin Kirkland ]
   * === added directory bin, bin/ssh-auth-id, bin/ssh-auth-id-gh,

@@ -21,12 +21,12 @@ ssh-import-id uses short prefix to indicate the location of the online identity.
 Command line help:
 
 	usage: ssh-import-id [-h] [-o FILE] USERID [USERID ...]
-	
+
 	Authorize SSH public keys from trusted online identities.
-	
+
 	positional arguments:
   	USERID                User IDs to import
-	
+
 	optional arguments:
   	-h, --help            show this help message and exit
   	-o FILE, --output FILE
@@ -38,6 +38,10 @@ Example
 If you wanted me to be able to ssh into your server, as the desired user on that machine you would use:
 
 	$ ssh-import-id gh:cmars
+
+You can also import multiple users on the same line, even from different key services, like so:
+
+	$ ssh-import-id gh:cmars lp:kirkland
 
 Used with care, it's a great collaboration tool!
 
@@ -62,5 +66,5 @@ If you do develop such a handler, I recommend that you connect to the service wi
 Credits
 -------
 
-This project is based on ssh-import-id by Dustin Kirkland and Scott Moser.
+This project is authored and maintained by Dustin Kirkland, Scott Moser, and Casey Marshall.
 
