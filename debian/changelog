@@ -21,8 +21,8 @@ ssh-import-id (2.14) unreleased; urgency=low
     - drop the "starts with ssh-" check
     - bad assumption, since my ecdsa key starts with "ecdsa-sha2-nistp256"
     - if it's a bad key, then ssh-keygen -l -f will shake that out
-  * bin/ssh-import-id-lp:
     - support wget as a fallback, when python requests module is not available
+    - loop over each id in argv
 
   [ Casey Marshall and Dustin Kirkland ]
   * === added directory bin, bin/ssh-auth-id, bin/ssh-auth-id-gh,
