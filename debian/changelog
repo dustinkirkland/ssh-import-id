@@ -3,6 +3,9 @@ ssh-import-id (3.5) unreleased; urgency=low
   * bin/ssh-import-id, ssh-import-id.1:
     - support key revocation through a -r|--revoke option
     - only revokes keys that we label as adding (starting with this release)
+  * debian/control, debian/rules, setup.py:
+    - fix lintian warnings
+    - clean up pypi pkginfo
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 05 Feb 2013 17:37:55 -0600
 
