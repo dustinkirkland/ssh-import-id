@@ -1,4 +1,4 @@
-ssh-import-id (3.5) unreleased; urgency=low
+ssh-import-id (3.5-0ubuntu1) raring; urgency=low
 
   * bin/ssh-import-id, ssh-import-id.1:
     - support key revocation through a -r|--revoke option
@@ -7,7 +7,7 @@ ssh-import-id (3.5) unreleased; urgency=low
     - fix lintian warnings
     - clean up pypi pkginfo
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 05 Feb 2013 17:37:55 -0600
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Wed, 06 Feb 2013 16:39:54 -0600
 
 ssh-import-id (3.4-0ubuntu1) raring; urgency=low
 
