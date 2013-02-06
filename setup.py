@@ -15,6 +15,29 @@
 # You should have received a copy of the GNU General Public License
 # along with ssh-import-id.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 from setuptools import setup
 
-setup(name='ssh-import-id', version='3.4', description='Authorize SSH public keys from trusted online identities', author='Casey Marshall, Dustin Kirkland', author_email='casey.marshall@gmail.com, dustin.kirkland@gmail.com', url='https://launchpad.net/ssh-import-id', scripts=['bin/ssh-import-id', 'bin/ssh-import-id-gh', 'bin/ssh-import-id-lp'], install_requires=["argparse", "Requests>=1.1.0"])
+
+def read(fname):
+	return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
+
+setup(
+		name='ssh-import-id',
+		description='Authorize SSH public keys from trusted online identities',
+		long_description=read('README.md'),
+		version='3.5',
+		author='Casey Marshall, Dustin Kirkland',
+		author_email='casey.marshall@gmail.com, dustin.kirkland@gmail.com',
+		license="GPLv3",
+		keywords="ssh public key",
+		url='https://launchpad.net/ssh-import-id',
+		platforms=['any'],
+		scripts=[
+				'bin/ssh-import-id',
+				'bin/ssh-import-id-gh',
+				'bin/ssh-import-id-lp'],
+				install_requires=["argparse", "Requests>=1.1.0"
+		],
+)

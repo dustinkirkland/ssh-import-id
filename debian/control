@@ -2,10 +2,9 @@ Source: ssh-import-id
 Section: misc
 Priority: extra
 Maintainer: Dustin Kirkland <kirkland@ubuntu.com>
-Build-Depends: debhelper (>= 7),
+Build-Depends: debhelper (>= 7.0.50~),
  pep8,
  python-all (>= 2.6),
- python-all-dev,
  python-setuptools
 Standards-Version: 3.9.3
 Homepage: http://launchpad.net/ssh-import-id
