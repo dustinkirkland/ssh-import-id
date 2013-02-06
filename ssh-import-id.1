@@ -1,9 +1,9 @@
 .TH ssh\-import\-id 1 "4 Feb 2013" ssh\-import "ssh\-import"
 .SH NAME
-ssh\-import\-id \- retrieve one or more public keys from a public keyserver and append them to the current user's authorized_keys file (or some other specified file)
+\fBssh\-import\-id\fP \- retrieve one or more public keys from a public keyserver and append them to the current user's authorized_keys file (or some other specified file)
 
 .SH SYNOPSIS
-.BI "ssh\-import\-id [options] lp:USER_ID_1 [gh:USER_ID_2] ... [lp:USER_ID_n]
+.BI "ssh\-import\-id [options] USER_ID_1 [gh:USER_ID_2] ... [lp:USER_ID_n]
 
 .BI "ssh\-import\-id\-lp USER_ID_1 [USER_ID_2] ... [USER_ID_n]
 
@@ -12,13 +12,20 @@ ssh\-import\-id \- retrieve one or more public keys from a public keyserver and 
 .SH OPTIONS
  \-h | \-\-help		usage
  \-o | \-\-output F	write output to file 'F' (default ~/.ssh/authorized_keys, use "\-" for standard out)
+ \-r | \-\-revoke  	revoke keys from authorized keys file 'F'
+ PROTO:USER_ID		Protocol can be 'lp' for Launchpad.net, or 'gh' for Github.com
 
 .SH DESCRIPTION
 This utility will securely contact a public keyserver and retrieve one or more user's public keys, and append these to the current user's \fI~/.ssh/authorized_keys\fP file, standard output or any other specified output file.
 
-User IDs can be prepended by "lp:" to use \fIhttps://launchpad.net/~%s/+sshkeys\fP, or "gh:" to use \fIhttps://api.github.com/users/%s/keys\fP.
+User IDs can be prepended by a protocol:
+
+ - \fBlp:\fP to use \fIhttps://launchpad.net/~%s/+sshkeys\fP
+ - \fBgh:\fP to use \fIhttps://api.github.com/users/%s/keys\fP
 
 If the protocol is not explicitly specified, then \fBssh-import-id\fP will read a URL variable string from \fI/etc/ssh/ssh_import_id\fP as installed by your package manager and configured by your system administrator.  You can override this locally by exporting the string you want in a URL environment variable.  If all of these are empty, then the protocol is assumed to be "lp:", which was the original target implementation of this tool.
+
+Any keys added will be "labled" with a trailing comment, "# ssh-import-id PROTO:USER_ID".  Revoking keys will first look for lines in the authorized keys file ending with that label.
 
 .SH SEE ALSO
 \fIssh\fP(1)
