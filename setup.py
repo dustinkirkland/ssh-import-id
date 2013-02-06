@@ -27,7 +27,7 @@ setup(
 		name='ssh-import-id',
 		description='Authorize SSH public keys from trusted online identities',
 		long_description=read('README.md'),
-		version='3.5',
+		version='3.6',
 		author='Casey Marshall, Dustin Kirkland',
 		author_email='casey.marshall@gmail.com, dustin.kirkland@gmail.com',
 		license="GPLv3",
