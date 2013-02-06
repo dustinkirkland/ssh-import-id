@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# ssh-import-id - Authorize SSH public keys from trusted online identities.
+# ssh-import-id - Authorize SSH public keys from trusted online identities
 #
 # Copyright (c) 2013 Casey Marshall <casey.marshall@gmail.com>
 # Copyright (c) 2013 Dustin Kirkland <dustin.kirkland@gmail.com>
@@ -31,13 +31,14 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=loggin
 
 parser = argparse.ArgumentParser(description='Authorize SSH public keys from trusted online identities.')
 parser.add_argument('-o', '--output', metavar='FILE', help='Write output to file (default ~/.ssh/authorized_keys)')
+parser.add_argument('-r', '--revoke', help='Revoke a key from authorized keys file', action="store_true", default=False)
 parser.add_argument('userids', nargs='+', metavar="USERID", help='User IDs to import')
 parser.options = None
 
 
 def die(msg):
 	"""
-	The only thing in Perl worth keeping.
+	The only thing in Perl worth keeping
 	"""
 	logging.error(msg)
 	os._exit(1)
@@ -45,8 +46,8 @@ def die(msg):
 
 def key_fingerprint(fields):
 	"""
-	Get the fingerprint for an SSH public key.
-	Returns None if not valid key material.
+	Get the fingerprint for an SSH public key
+	Returns None if not valid key material
 	"""
 	if not fields:
 		return None
@@ -82,68 +83,127 @@ def open_output(name, mode='a+'):
 		return open(name, mode)
 
 
-def import_keys(proto, username):
+def read_keyfile():
 	"""
-	Import keys from service at 'proto' for 'username',
-	appending to output file.
+	Locate key file, read the current state, return lines in a list
 	"""
-	# Map out which keys we already have, so we don't keep
-	# appending the same ones.
-	have_keys = set()
-	# Locate output file
+	lines = []
 	output_file = parser.options.output or os.path.join(os.getenv("HOME"), ".ssh", "authorized_keys")
 	if os.path.exists(output_file):
 		with open(output_file, "r") as f:
-			for line in f.readlines():
-				fields = line.split()
-				ssh_fp = key_fingerprint(fields)
-				if ssh_fp:
-					# key is uniquely identified by the tuple [length, hash, type]]
-					fp_tuple = ' '.join([ssh_fp[0], ssh_fp[1], ssh_fp[3]])
-					have_keys.add(fp_tuple)
+			lines = f.readlines()
 	elif os.path.dirname(output_file) and not os.path.isdir(os.path.dirname(output_file)):
 		die("Parent directory not found for output [%s]" % (output_file))
-	logging.debug("Already have SSH public keys: [%s]" % (' '.join(have_keys)))
-	# Execute the protocol handler, get the keys from
-	# whatever service that maps out to.
+	return lines
+
+
+def write_keyfile(keyfile_lines, mode):
+	"""
+	Locate key file, write lines to it
+	"""
+	output_file = parser.options.output or os.path.join(os.getenv("HOME"), ".ssh", "authorized_keys")
+	if output_file == "-":
+		for line in keyfile_lines:
+			if line:
+				sys.stdout.write(line)
+				sys.stdout.write("\n")
+		sys.stdout.flush()
+	elif os.path.dirname(output_file) and os.path.isdir(os.path.dirname(output_file)):
+		with open(output_file, mode) as f:
+			for line in keyfile_lines:
+				if line.strip():
+					f.write(line)
+					f.write("\n")
+	else:
+		die("Parent directory not found for output [%s]" % (output_file))
+
+
+def fp_tuple(fp):
+	"""
+	Build a string that uniquely identifies a key
+	"""
+	# An SSH public key is uniquely identified by the tuple [length, hash, type]]
+	# fp should be a list of results of the `ssh-keygen -l -f` command
+	return ' '.join([fp[0], fp[1], fp[-1]])
+
+
+def key_list(keyfile_lines):
+	"""
+	Return a list of uniquely identified keys
+	"""
+	# Map out which keys we already have
+	keys = []
+	for line in keyfile_lines:
+		ssh_fp = key_fingerprint(line.split())
+		if ssh_fp:
+			keys.append(fp_tuple(ssh_fp))
+	logging.debug("Already have SSH public keys: [%s]" % (' '.join(keys)))
+	return keys
+
+
+def fetch_keys(proto, username):
+	"""
+	Call out to a subcommand to handle the specified protocol and username
+	"""
 	proto_cmd_path = os.path.join(os.path.dirname(sys.argv[0]), "%s-%s" % (os.path.basename(sys.argv[0]), proto))
 	if not os.path.isfile(proto_cmd_path) or not os.access(proto_cmd_path, os.X_OK):
 		die("ssh-import-id protocol handler %s: not found or cannot execute" % (proto_cmd_path))
 	proc = subprocess.Popen([proto_cmd_path, username], stdout=subprocess.PIPE)
-	proc_output, _ = proc.communicate(None)
+	output, _ = proc.communicate(None)
 	if proc.returncode:
 		raise Exception("Error executing protocol helper [%s]" % proto_cmd_path)
-	# Protocol handler should output SSH keys, one per line.
+	return output.split("\n")
+
+
+def import_keys(proto, username):
+	"""
+	Import keys from service at 'proto' for 'username', appending to output file
+	"""
+	# Map out which keys we already have, so we don't keep appending the same ones
+	local_keys = key_list(read_keyfile())
+	# Protocol handler should output SSH keys, one per line
 	result = []
-	f = open_output(output_file, "a+")
-	for line in proc_output.splitlines():
+	keyfile_lines = []
+	comment_string = "# ssh-import-id %s:%s" % (proto, username)
+	for line in fetch_keys(proto, username):
 		# Validate/clean-up key text
 		line = line.decode('utf-8').strip()
 		fields = line.split()
+		fields.append(comment_string)
 		ssh_fp = key_fingerprint(fields)
 		if ssh_fp:
-			fp_tuple = ' '.join([ssh_fp[0], ssh_fp[1], ssh_fp[3]])
-			if fp_tuple in have_keys:
+			if fp_tuple(ssh_fp) in local_keys:
 				logging.info("Already authorized %s" % (ssh_fp))
 			else:
+				keyfile_lines.append(" ".join(fields))
 				result.append(fields)
-				if f:
-					# Print to file
-					f.write(" ".join(fields[:3]))
-					f.write('\n')
-				else:
-					# Print to stdout
-					sys.stdout.write(" ".join(fields[:3]))
-					sys.stdout.write('\n')
-					sys.stdout.flush()
-				logging.info("Authorized key %s" % (ssh_fp))
-	if f:
-		f.close()
+				logging.info("Authorized key %s" % (ssh_fp[:3]))
+	write_keyfile(keyfile_lines, "a+")
 	return result
+
+
+def revoke_keys(proto, username):
+	"""
+	Revoke keys from the output file, if they were inserted by this tool
+	"""
+	# Only revoke keys labeled with our comment string
+	comment_string = "# ssh-import-id %s:%s\n" % (proto, username)
+	update_lines = []
+	revoked = []
+	for line in read_keyfile():
+		if line.endswith(comment_string):
+			ssh_fp = key_fingerprint(line.split())
+			logging.info("Revoked labeled key %s" % (ssh_fp[:3]))
+			revoked.append(line)
+		else:
+			update_lines.append(line)
+	write_keyfile(update_lines, "w")
+	return revoked
 
 
 if __name__ == '__main__':
 	try:
+		os.umask(0o177)
 		parser.options = parser.parse_args()
 		keys = []
 		for userid in parser.options.userids:
@@ -154,8 +214,13 @@ if __name__ == '__main__':
 				proto, username = DEFAULT_PROTO, userid
 			else:
 				die("Invalid user ID: [%s]" % (userid))
-			keys.extend(import_keys(proto, username))
-		logging.info("Authorized [%d] new SSH keys" % (len(keys)))
+			if parser.options.revoke:
+				keys.extend(revoke_keys(proto, username))
+				action = "Revoked"
+			else:
+				keys.extend(import_keys(proto, username))
+				action = "Authorized"
+		logging.info("%s [%d] SSH keys" % (action, len(keys)))
 	except (Exception,):
 		e = sys.exc_info()[1]
 		die("%s" % (str(e)))
