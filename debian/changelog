@@ -1,3 +1,9 @@
+ssh-import-id (3.9) unreleased; urgency=low
+
+  * UNRELEASED
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Thu, 07 Feb 2013 11:20:51 -0600
+
 ssh-import-id (3.8-0ubuntu1) raring; urgency=low
 
   * No change release; our Python and Debian/Ubuntu version numbers got
