@@ -1,9 +1,9 @@
-ssh-import-id (3.8) unreleased; urgency=low
+ssh-import-id (3.8-0ubuntu1) raring; urgency=low
 
   * No change release; our Python and Debian/Ubuntu version numbers got
     out of sync due to a bug in my release script
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Thu, 07 Feb 2013 10:17:05 -0600
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Thu, 07 Feb 2013 11:20:40 -0600
 
 ssh-import-id (3.7-0ubuntu1) raring; urgency=low
 
