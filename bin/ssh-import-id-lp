@@ -45,8 +45,9 @@ if __name__ == '__main__':
 					url = conf.get("URL", None).decode("utf-8") % (quote_plus(lpid))
 				except:
 					raise Exception("Ensure that URL is defined in [/etc/ssh/ssh_import_id] is in JSON syntax")
-			else:
-				url = os.getenv("URL", None) % (quote_plus(lpid))
+			elif url is not None:
+				url = url % (quote_plus(lpid))
+			# Finally, fall back to Launchpad
 			if url is None:
 				url = "https://launchpad.net/~%s/+sshkeys" % (quote_plus(lpid))
 			if REQUESTS:

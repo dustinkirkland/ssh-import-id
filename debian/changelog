@@ -1,6 +1,9 @@
 ssh-import-id (3.9) unreleased; urgency=low
 
-  * UNRELEASED
+  * bin/ssh-import-id-lp:
+    - ensure that URL is not None before using it
+    - fixes exception when URL is not defined in config file and not in
+      the environment
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Thu, 07 Feb 2013 11:20:51 -0600
 
