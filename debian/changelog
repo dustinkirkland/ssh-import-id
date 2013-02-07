@@ -1,6 +1,7 @@
 ssh-import-id (3.10) unreleased; urgency=low
 
-  * UNRELEASED
+  * bin/ssh-import-id:
+    - show key type in info messages
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Thu, 07 Feb 2013 11:33:34 -0600
 

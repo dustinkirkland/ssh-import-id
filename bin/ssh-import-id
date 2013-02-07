@@ -173,11 +173,11 @@ def import_keys(proto, username):
 		ssh_fp = key_fingerprint(fields)
 		if ssh_fp:
 			if fp_tuple(ssh_fp) in local_keys:
-				logging.info("Already authorized %s" % (ssh_fp))
+				logging.info("Already authorized %s" % (ssh_fp[:3] + ssh_fp[-1:]))
 			else:
 				keyfile_lines.append(" ".join(fields))
 				result.append(fields)
-				logging.info("Authorized key %s" % (ssh_fp[:3]))
+				logging.info("Authorized key %s" % (ssh_fp[:3] + ssh_fp[-1:]))
 	write_keyfile(keyfile_lines, "a+")
 	return result
 
@@ -193,7 +193,7 @@ def revoke_keys(proto, username):
 	for line in read_keyfile():
 		if line.endswith(comment_string):
 			ssh_fp = key_fingerprint(line.split())
-			logging.info("Revoked labeled key %s" % (ssh_fp[:3]))
+			logging.info("Revoked labeled key %s" % (ssh_fp[:3] + ssh_fp[-1:]))
 			revoked.append(line)
 		else:
 			update_lines.append(line)
