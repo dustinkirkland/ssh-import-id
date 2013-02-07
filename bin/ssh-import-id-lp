@@ -39,7 +39,7 @@ if __name__ == '__main__':
 	for lpid in sys.argv[1:]:
 		try:
 			url = os.getenv("URL", None)
-			if url is None:
+			if url is None and os.path.exists("/etc/ssh/ssh_import_id"):
 				try:
 					conf = json.loads(open("/etc/ssh/ssh_import_id").read())
 					url = conf.get("URL", None).decode("utf-8") % (quote_plus(lpid))

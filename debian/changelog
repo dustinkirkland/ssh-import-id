@@ -1,6 +1,7 @@
 ssh-import-id (3.7) unreleased; urgency=low
 
-  * UNRELEASED
+  * bin/ssh-import-id-lp:
+    - another fix for Mac OS X
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Thu, 07 Feb 2013 09:52:41 -0600
 
