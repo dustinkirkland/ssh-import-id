@@ -18,15 +18,14 @@
 import os
 from setuptools import setup
 
-
-def read(fname):
-	return open(os.path.join(os.path.dirname(__file__), fname)).read()
-
-
+try:
+	readme = open(os.path.join(os.path.dirname(__file__), "README.md")).read()
+except:
+	readme = "See: http://pypi.python.org/pypi?name=ssh-import-id&:action=display_pkginfo"
 setup(
 		name='ssh-import-id',
 		description='Authorize SSH public keys from trusted online identities',
-		long_description=read('README.md'),
+		long_description=readme,
 		version='3.6',
 		author='Casey Marshall, Dustin Kirkland',
 		author_email='casey.marshall@gmail.com, dustin.kirkland@gmail.com',
