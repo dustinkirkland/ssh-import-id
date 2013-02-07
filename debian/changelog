@@ -1,6 +1,7 @@
 ssh-import-id (3.6) unreleased; urgency=low
 
-  * UNRELEASED
+  * setup.py:
+    - fix pip install on Mac
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Wed, 06 Feb 2013 16:39:58 -0600
 
