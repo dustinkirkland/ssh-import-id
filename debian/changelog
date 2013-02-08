@@ -1,6 +1,7 @@
 ssh-import-id (3.11) unreleased; urgency=low
 
-  * UNRELEASED
+  * bin/ssh-import-id:
+    - cleanup tempfiles left around in case we die() early
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Thu, 07 Feb 2013 17:45:35 -0600
 
