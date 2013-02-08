@@ -46,6 +46,7 @@ def cleanup():
 		if os.path.exists(f):
 			os.unlink(f)
 
+
 def die(msg):
 	"""
 	The only thing in Perl worth keeping
