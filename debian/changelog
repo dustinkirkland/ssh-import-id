@@ -1,6 +1,7 @@
 ssh-import-id (3.12) unreleased; urgency=low
 
-  * UNRELEASED
+  * debian/control:
+    - note github.com in the package description
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Fri, 08 Feb 2013 12:35:17 -0600
 
