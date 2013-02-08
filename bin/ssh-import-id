@@ -35,12 +35,23 @@ parser.add_argument('-r', '--revoke', help='Revoke a key from authorized keys fi
 parser.add_argument('userids', nargs='+', metavar="USERID", help='User IDs to import')
 parser.options = None
 
+TEMPFILES = []
+
+
+def cleanup():
+	"""
+	Cleanup tempfiles
+	"""
+	for f in TEMPFILES:
+		if os.path.exists(f):
+			os.unlink(f)
 
 def die(msg):
 	"""
 	The only thing in Perl worth keeping
 	"""
 	logging.error(msg)
+	cleanup()
 	os._exit(1)
 
 
@@ -54,6 +65,7 @@ def key_fingerprint(fields):
 	if len(fields) < 3:
 		return None
 	tempfd, tempname = tempfile.mkstemp(prefix='ssh-auth-key-check', suffix='.pub')
+	TEMPFILES.append(tempname)
 	with os.fdopen(tempfd, "w") as tempf:
 		tempf.write(" ".join(fields))
 		tempf.write("\n")
@@ -224,4 +236,5 @@ if __name__ == '__main__':
 	except (Exception,):
 		e = sys.exc_info()[1]
 		die("%s" % (str(e)))
+	cleanup()
 	os._exit(0)
