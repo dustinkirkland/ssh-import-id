@@ -1,4 +1,4 @@
-ssh-import-id (3.12) unreleased; urgency=low
+ssh-import-id (3.12-0ubuntu1) raring; urgency=low
 
   * debian/control:
     - note github.com in the package description
@@ -7,7 +7,7 @@ ssh-import-id (3.12) unreleased; urgency=low
     - we're not really "revoking" keys, but rather just removing them
       from the authorized_keys file
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Fri, 08 Feb 2013 12:35:17 -0600
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Fri, 15 Feb 2013 15:03:53 -0600
 
 ssh-import-id (3.11-0ubuntu1) raring; urgency=low
 
