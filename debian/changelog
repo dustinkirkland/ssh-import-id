@@ -1,3 +1,9 @@
+ssh-import-id (3.13) unreleased; urgency=low
+
+  * UNRELEASED
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Fri, 15 Feb 2013 15:03:55 -0600
+
 ssh-import-id (3.12-0ubuntu1) raring; urgency=low
 
   * debian/control:
