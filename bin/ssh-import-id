@@ -31,7 +31,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=loggin
 
 parser = argparse.ArgumentParser(description='Authorize SSH public keys from trusted online identities.')
 parser.add_argument('-o', '--output', metavar='FILE', help='Write output to file (default ~/.ssh/authorized_keys)')
-parser.add_argument('-r', '--revoke', help='Revoke a key from authorized keys file', action="store_true", default=False)
+parser.add_argument('-r', '--remove', help='Remove a key from authorized keys file', action="store_true", default=False)
 parser.add_argument('userids', nargs='+', metavar="USERID", help='User IDs to import')
 parser.options = None
 
@@ -195,23 +195,23 @@ def import_keys(proto, username):
 	return result
 
 
-def revoke_keys(proto, username):
+def remove_keys(proto, username):
 	"""
-	Revoke keys from the output file, if they were inserted by this tool
+	Remove keys from the output file, if they were inserted by this tool
 	"""
-	# Only revoke keys labeled with our comment string
+	# Only remove keys labeled with our comment string
 	comment_string = "# ssh-import-id %s:%s\n" % (proto, username)
 	update_lines = []
-	revoked = []
+	removed = []
 	for line in read_keyfile():
 		if line.endswith(comment_string):
 			ssh_fp = key_fingerprint(line.split())
-			logging.info("Revoked labeled key %s" % (ssh_fp[:3] + ssh_fp[-1:]))
-			revoked.append(line)
+			logging.info("Removed labeled key %s" % (ssh_fp[:3] + ssh_fp[-1:]))
+			removed.append(line)
 		else:
 			update_lines.append(line)
 	write_keyfile(update_lines, "w")
-	return revoked
+	return removed
 
 
 if __name__ == '__main__':
@@ -227,9 +227,9 @@ if __name__ == '__main__':
 				proto, username = DEFAULT_PROTO, userid
 			else:
 				die("Invalid user ID: [%s]" % (userid))
-			if parser.options.revoke:
-				keys.extend(revoke_keys(proto, username))
-				action = "Revoked"
+			if parser.options.remove:
+				keys.extend(remove_keys(proto, username))
+				action = "Removed"
 			else:
 				keys.extend(import_keys(proto, username))
 				action = "Authorized"
