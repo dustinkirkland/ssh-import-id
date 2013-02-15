@@ -6,7 +6,7 @@ WITH_PYTHON2 = $(shell test -f /usr/bin/dh_python2 && echo "--with python2")
 
 override_dh_auto_build:
 	# Check syntax
-	pep8 --verbose --repeat --ignore W191,E501,E121 *.py bin/*
+	pep8 --verbose --repeat --ignore W191,E501,E121 bin/*
 	dh_auto_build
 
 %:
