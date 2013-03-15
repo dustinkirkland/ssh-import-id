@@ -22,10 +22,14 @@ import json
 import subprocess
 import sys
 try:
-	import requests
-	REQUESTS = True
-except (ImportError,):
-	REQUESTS = False
+        import requests
+        # Only versions >= 1.1.0 support SSL certificate verification
+        if requests.__version__ >= '1.1.0':
+                REQUESTS = True
+        else:
+                REQUESTS = False
+except:
+        REQUESTS = False
 try:
 	from urllib import quote_plus
 except (ImportError,):

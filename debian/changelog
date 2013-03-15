@@ -1,6 +1,9 @@
 ssh-import-id (3.14) unreleased; urgency=low
 
-  * UNRELEASED
+  * bin/ssh-import-id-gh, bin/ssh-import-id-lp: LP: #1155252
+    - python requests module must be >= 1.1.0, for ssl certificate
+      verification and proper quoting; fall back to wget if module
+      is available, but older
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Fri, 15 Feb 2013 16:59:06 -0600
 
