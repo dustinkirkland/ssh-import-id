@@ -1,6 +1,7 @@
 ssh-import-id (3.15) unreleased; urgency=low
 
-  * UNRELEASED
+  * bin/ssh-import-id: LP: #1172434
+    - create the keyfile destination directory, if necessary
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Fri, 15 Mar 2013 10:12:43 -0500
 
