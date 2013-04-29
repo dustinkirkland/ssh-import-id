@@ -1,6 +1,8 @@
 ssh-import-id (3.16) unreleased; urgency=low
 
-  * UNRELEASED
+  * Empty release for upload to Ubuntu saucy
+    - ssh-import-id 3.15 was released after raring closed, but before
+      saucy opened
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Wed, 24 Apr 2013 21:49:05 -0500
 
