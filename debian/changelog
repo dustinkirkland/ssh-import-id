@@ -1,3 +1,9 @@
+ssh-import-id (3.18) unreleased; urgency=low
+
+  * UNRELEASED
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 29 Apr 2013 09:49:54 -0500
+
 ssh-import-id (3.17-0ubuntu1) saucy; urgency=low
 
   * Another no-change release for Ubuntu
