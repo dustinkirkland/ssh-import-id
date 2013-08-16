@@ -1,3 +1,9 @@
+ssh-import-id (3.19) unreleased; urgency=low
+
+  * UNRELEASED
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Fri, 16 Aug 2013 15:17:18 -0500
+
 ssh-import-id (3.18-0ubuntu1) saucy; urgency=low
 
   * attic/ssh-import-id, attic/ssh-import-id.py, === removed directory
