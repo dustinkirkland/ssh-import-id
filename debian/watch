@@ -1,0 +1,2 @@
+version=3
+http://launchpad.net/ssh-import-id/+download https://launchpad.net/ssh-import-id/.*/ssh-import-id_(.*)\.orig\.tar\.gz

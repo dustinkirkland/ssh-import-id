@@ -10,6 +10,8 @@ ssh-import-id (3.18) unreleased; urgency=low
     - update debian copyright file format
   * debian/postinst:
     - add inline comments for Debian
+  * debian/watch:
+    - add a debian watch file
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 29 Apr 2013 09:49:54 -0500
 
