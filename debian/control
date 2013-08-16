@@ -20,8 +20,6 @@ Depends: ca-certificates,
          ${misc:Depends},
          ${python:Depends}
 Recommends: openssh-server
-Breaks: ssh-import
-Replaces: ssh-import
 Description: securely retrieve an SSH public key and install it locally
  This utility will securely contact a public keyserver (Launchpad.net by
  default, but Github.com is also supported), retrieve one or more user's
