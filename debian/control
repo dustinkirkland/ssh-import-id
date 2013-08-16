@@ -9,6 +9,7 @@ Build-Depends: debhelper (>= 7.0.50~),
                python-setuptools
 Standards-Version: 3.9.4
 Homepage: http://launchpad.net/ssh-import-id
+Vcs-Browser: http://bazaar.launchpad.net/~ssh-import-id/ssh-import-id/trunk/files
 Vcs-Bzr: https://code.launchpad.net/~ssh-import-id/ssh-import-id/trunk
 
 Package: ssh-import-id
