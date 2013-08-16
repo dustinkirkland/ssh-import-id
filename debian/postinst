@@ -2,7 +2,10 @@
 
 set -e
 
-# Migrate from shell syntax configuration file to JSON
+# Migrate from shell syntax configuration file to JSON to
+# smooth migration from ssh-import-id < 3.0. Though this was
+# never in Debian, let's still provide this incase some had
+# installed the package from Ubuntu.
 sed -i -e "/^#/d" -e "s/^URL=\"\(.*\)\"/{\"URL\": \"\1\"}/" /etc/ssh/ssh_import_id || true
 
 #DEBHELPER#
