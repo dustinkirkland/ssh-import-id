@@ -8,6 +8,8 @@ ssh-import-id (3.18) unreleased; urgency=low
     - merge some minor changes from Andrew Starr-Bochicchio
   * debian/copyright:
     - update debian copyright file format
+  * debian/postinst:
+    - add inline comments for Debian
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 29 Apr 2013 09:49:54 -0500
 
