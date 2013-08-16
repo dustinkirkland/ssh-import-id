@@ -3,6 +3,7 @@ ssh-import-id (3.19) unreleased; urgency=low
   * debian/control:
     - drop the breaks/replaces ssh-import;  this package hasn't existed for
       eons; we should never realistically encounter it any more
+    - add vcs-browser
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Fri, 16 Aug 2013 15:17:18 -0500
 
