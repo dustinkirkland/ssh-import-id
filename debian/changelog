@@ -12,6 +12,8 @@ ssh-import-id (3.18) unreleased; urgency=low
     - add inline comments for Debian
   * debian/watch:
     - add a debian watch file
+  * debian/control:
+    - add Andrew Starr-Bochicchio <asb@debian.org> as an uploader
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 29 Apr 2013 09:49:54 -0500
 

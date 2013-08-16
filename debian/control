@@ -2,6 +2,7 @@ Source: ssh-import-id
 Section: misc
 Priority: extra
 Maintainer: Dustin Kirkland <kirkland@ubuntu.com>
+Uploaders: Andrew Starr-Bochicchio <asb@debian.org>
 Build-Depends: debhelper (>= 7.0.50~),
  pep8,
  python-all (>= 2.6),
