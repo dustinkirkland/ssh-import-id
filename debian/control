@@ -4,20 +4,21 @@ Priority: extra
 Maintainer: Dustin Kirkland <kirkland@ubuntu.com>
 Uploaders: Andrew Starr-Bochicchio <asb@debian.org>
 Build-Depends: debhelper (>= 7.0.50~),
- pep8,
- python-all (>= 2.6),
- python-setuptools
+               pep8,
+               python-all (>= 2.6),
+               python-setuptools
 Standards-Version: 3.9.4
 Homepage: http://launchpad.net/ssh-import-id
+Vcs-Bzr: https://code.launchpad.net/~ssh-import-id/ssh-import-id/trunk
 
 Package: ssh-import-id
 Architecture: all
 Depends: ca-certificates,
- openssh-client,
- python-requests (>= 1.1.0),
- wget,
- ${misc:Depends},
- ${python:Depends}
+         openssh-client,
+         python-requests (>= 1.1.0),
+         wget,
+         ${misc:Depends},
+         ${python:Depends}
 Recommends: openssh-server
 Breaks: ssh-import
 Replaces: ssh-import
