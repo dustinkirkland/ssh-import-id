@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 7.0.50~),
  pep8,
  python-all (>= 2.6),
  python-setuptools
-Standards-Version: 3.9.3
+Standards-Version: 3.9.4
 Homepage: http://launchpad.net/ssh-import-id
 
 Package: ssh-import-id

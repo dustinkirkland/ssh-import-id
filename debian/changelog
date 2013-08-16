@@ -3,6 +3,8 @@ ssh-import-id (3.18) unreleased; urgency=low
   * attic/ssh-import-id, attic/ssh-import-id.py, === removed directory
     attic:
     - fully deprecate the old versions of these scripts; no longer necessary
+  * debian/control:
+    - bump standards
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 29 Apr 2013 09:49:54 -0500
 
