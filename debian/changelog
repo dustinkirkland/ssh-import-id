@@ -5,6 +5,7 @@ ssh-import-id (3.18) unreleased; urgency=low
     - fully deprecate the old versions of these scripts; no longer necessary
   * debian/control:
     - bump standards
+    - merge some minor changes from Andrew Starr-Bochicchio
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 29 Apr 2013 09:49:54 -0500
 

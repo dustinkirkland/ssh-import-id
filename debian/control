@@ -11,11 +11,17 @@ Homepage: http://launchpad.net/ssh-import-id
 
 Package: ssh-import-id
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, wget, ca-certificates, openssh-client
-Recommends: openssh-server, python-requests
+Depends: ca-certificates,
+ openssh-client,
+ python-requests (>= 1.1.0),
+ wget,
+ ${misc:Depends},
+ ${python:Depends}
+Recommends: openssh-server
 Breaks: ssh-import
 Replaces: ssh-import
 Description: securely retrieve an SSH public key and install it locally
  This utility will securely contact a public keyserver (Launchpad.net by
  default, but Github.com is also supported), retrieve one or more user's
- public keys, and append these to the current user's ~/.ssh/authorized_keys file.
+ public keys, and append these to the current user's ~/.ssh/authorized_keys
+ file.
