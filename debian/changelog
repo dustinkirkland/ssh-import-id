@@ -1,4 +1,4 @@
-ssh-import-id (3.20) unreleased; urgency=low
+ssh-import-id (3.20-0ubuntu1) trusty; urgency=low
 
   * bin/ssh-import-id: LP: #1274426
     - ensure that we exit zero if any of the id's that we try to import
@@ -6,7 +6,7 @@ ssh-import-id (3.20) unreleased; urgency=low
     - however, we should continue to try to succeed, as much as possible,
       even if one of the earlier accounts failed
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Fri, 16 Aug 2013 15:33:27 -0500
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Thu, 30 Jan 2014 09:22:45 +0000
 
 ssh-import-id (3.19-0ubuntu1) saucy; urgency=low
 
