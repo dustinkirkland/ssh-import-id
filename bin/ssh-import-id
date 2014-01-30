@@ -238,6 +238,7 @@ def remove_keys(proto, username):
 
 
 if __name__ == '__main__':
+	errors = []
 	try:
 		os.umask(0o177)
 		parser.options = parser.parse_args()
@@ -251,14 +252,20 @@ if __name__ == '__main__':
 			else:
 				die("Invalid user ID: [%s]" % (userid))
 			if parser.options.remove:
-				keys.extend(remove_keys(proto, username))
+				k = remove_keys(proto, username)
+				keys.extend(k)
 				action = "Removed"
 			else:
-				keys.extend(import_keys(proto, username))
+				k = import_keys(proto, username)
+				keys.extend(k)
 				action = "Authorized"
+			if len(k) == 0:
+				errors.append(userid)
 		logging.info("%s [%d] SSH keys" % (action, len(keys)))
 	except (Exception,):
 		e = sys.exc_info()[1]
 		die("%s" % (str(e)))
 	cleanup()
+	if len(errors) > 0:
+		die("No matching keys found for [%s]" % ','.join(errors))
 	os._exit(0)

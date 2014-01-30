@@ -1,6 +1,10 @@
 ssh-import-id (3.20) unreleased; urgency=low
 
-  * UNRELEASED
+  * bin/ssh-import-id: LP: #1274426
+    - ensure that we exit zero if any of the id's that we try to import
+      affect 0 keys (ie, if we fail to do something we were asked to do)
+    - however, we should continue to try to succeed, as much as possible,
+      even if one of the earlier accounts failed
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Fri, 16 Aug 2013 15:33:27 -0500
 
