@@ -1,3 +1,9 @@
+ssh-import-id (3.22) unreleased; urgency=low
+
+  * UNRELEASED
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Thu, 27 Feb 2014 09:39:24 -0600
+
 ssh-import-id (3.21-0ubuntu1) trusty; urgency=low
 
   * bin/ssh-import-id: LP: #1285295
