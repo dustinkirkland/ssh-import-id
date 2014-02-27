@@ -210,6 +210,7 @@ def import_keys(proto, username):
 		if ssh_fp:
 			if fp_tuple(ssh_fp) in local_keys:
 				logging.info("Already authorized %s" % (ssh_fp[:3] + ssh_fp[-1:]))
+				result.append(fields)
 			else:
 				keyfile_lines.append(" ".join(fields))
 				result.append(fields)
@@ -261,7 +262,7 @@ if __name__ == '__main__':
 				action = "Authorized"
 			if len(k) == 0:
 				errors.append(userid)
-		logging.info("%s [%d] SSH keys" % (action, len(keys)))
+		logging.info("[%d] SSH keys [%s]" % (len(keys), action))
 	except (Exception,):
 		e = sys.exc_info()[1]
 		die("%s" % (str(e)))

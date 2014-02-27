@@ -1,6 +1,8 @@
 ssh-import-id (3.21) unreleased; urgency=low
 
-  * UNRELEASED
+  * bin/ssh-import-id: LP: #1285295
+    - re-authorizing existing keys should exit 0
+    - update logging
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Thu, 30 Jan 2014 09:23:00 +0000
 
