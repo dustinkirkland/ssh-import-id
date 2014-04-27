@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # ssh-import-id - Authorize SSH public keys from trusted online identities.
 # Copyright (c) 2013 Casey Marshall <casey.marshall@gmail.com>

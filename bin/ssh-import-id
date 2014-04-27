@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # ssh-import-id - Authorize SSH public keys from trusted online identities
 #
@@ -188,7 +188,7 @@ def fetch_keys(proto, username):
 	output, _ = proc.communicate(None)
 	if proc.returncode:
 		raise Exception("Error executing protocol helper [%s]" % proto_cmd_path)
-	return output.split("\n")
+	return output.split(b"\n")
 
 
 def import_keys(proto, username):
