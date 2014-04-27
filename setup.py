@@ -37,6 +37,6 @@ setup(
 				'bin/ssh-import-id',
 				'bin/ssh-import-id-gh',
 				'bin/ssh-import-id-lp'],
-				install_requires=["argparse", "Requests>=1.1.0"
+				install_requires=["Requests>=1.1.0"
 		],
 )
