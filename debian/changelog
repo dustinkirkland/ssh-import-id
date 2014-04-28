@@ -1,3 +1,9 @@
+ssh-import-id (4.1) unreleased; urgency=medium
+
+  * UNRELEASED
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 28 Apr 2014 15:12:47 -0700
+
 ssh-import-id (4.0-0ubuntu1) utopic; urgency=low
 
   [ Andrew Starr-Bochicchio ]
