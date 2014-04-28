@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # ssh-import-id - Authorize SSH public keys from trusted online identities.
 #
@@ -21,19 +21,8 @@ import json
 import os
 import subprocess
 import sys
-try:
-	import requests
-	# Only versions >= 1.1.0 support SSL certificate verification
-	if requests.__version__ >= '1.1.0':
-		REQUESTS = True
-	else:
-		REQUESTS = False
-except:
-	REQUESTS = False
-try:
-	from urllib import quote_plus
-except (ImportError,):
-	from urllib.parse import quote_plus
+import requests
+from urllib.parse import quote_plus
 
 
 if __name__ == '__main__':
@@ -46,7 +35,7 @@ if __name__ == '__main__':
 			if url is None and os.path.exists("/etc/ssh/ssh_import_id"):
 				try:
 					conf = json.loads(open("/etc/ssh/ssh_import_id").read())
-					url = conf.get("URL", None).decode("utf-8") % (quote_plus(lpid))
+					url = conf.get("URL", None) % (quote_plus(lpid))
 				except:
 					raise Exception("Ensure that URL is defined in [/etc/ssh/ssh_import_id] is in JSON syntax")
 			elif url is not None:
@@ -54,17 +43,7 @@ if __name__ == '__main__':
 			# Finally, fall back to Launchpad
 			if url is None:
 				url = "https://launchpad.net/~%s/+sshkeys" % (quote_plus(lpid))
-			if REQUESTS:
-				text = requests.get(url, verify=True).text
-			else:
-				# Fall back to using good 'ole ubiquitous wget
-				p = subprocess.Popen(["wget", "--no-verbose", "-O", "-", url], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-				stdout, stderr = p.communicate()
-				sys.stderr.write(stderr.decode('utf-8'))
-				if p.returncode == 0:
-					text = stdout.decode('utf-8')
-				else:
-					raise Exception("Could not fetch URL [%s]" % url)
+			text = requests.get(url, verify=True).text
 			sys.stdout.write(str(text))
 			sys.stdout.write("\n")
 			sys.stdout.flush()

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # ssh-import-id - Authorize SSH public keys from trusted online identities.
 #
@@ -21,19 +21,8 @@ import os
 import json
 import subprocess
 import sys
-try:
-	import requests
-	# Only versions >= 1.1.0 support SSL certificate verification
-	if requests.__version__ >= '1.1.0':
-		REQUESTS = True
-	else:
-		REQUESTS = False
-except:
-	REQUESTS = False
-try:
-	from urllib import quote_plus
-except (ImportError,):
-	from urllib.parse import quote_plus
+import requests
+from urllib.parse import quote_plus
 
 
 if __name__ == '__main__':
@@ -43,17 +32,7 @@ if __name__ == '__main__':
 	for ghid in sys.argv[1:]:
 		try:
 			url = "https://api.github.com/users/%s/keys" % (quote_plus(ghid))
-			if REQUESTS:
-				text = requests.get(url, verify=True).text
-			else:
-				# Fall back to using good 'ole ubiquitous wget
-				p = subprocess.Popen(["wget", "--no-verbose", "-O", "-", url], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-				stdout, stderr = p.communicate()
-				sys.stderr.write(stderr.decode('utf-8'))
-				if p.returncode == 0:
-					text = stdout.decode('utf-8')
-				else:
-					raise Exception("Could not fetch URL [%s]" % url)
+			text = requests.get(url, verify=True).text
 			data = json.loads(text)
 			for keyobj in data:
 				sys.stdout.write("%s %s@github/%s\n" % (keyobj['key'], ghid, keyobj['id']))
