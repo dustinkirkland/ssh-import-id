@@ -1,4 +1,4 @@
-ssh-import-id (4.0) unreleased; urgency=low
+ssh-import-id (4.0-0ubuntu1) utopic; urgency=low
 
   [ Andrew Starr-Bochicchio ]
   * Port to python3 (LP: #1252474).
@@ -7,7 +7,7 @@ ssh-import-id (4.0) unreleased; urgency=low
   * setup.py:
     - bump to 4.0, to note the significant change to python3
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Thu, 27 Feb 2014 09:39:24 -0600
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 28 Apr 2014 15:12:44 -0700
 
 ssh-import-id (3.21-0ubuntu1) trusty; urgency=low
 
