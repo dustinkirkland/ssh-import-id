@@ -1,6 +1,7 @@
 ssh-import-id (4.1) unreleased; urgency=medium
 
-  * UNRELEASED
+  * setup.py:
+    - clean up some whitespace and indenting issues
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 28 Apr 2014 15:12:47 -0700
 

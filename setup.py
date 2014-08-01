@@ -33,10 +33,6 @@ setup(
 		keywords="ssh public key",
 		url='https://launchpad.net/ssh-import-id',
 		platforms=['any'],
-		scripts=[
-				'bin/ssh-import-id',
-				'bin/ssh-import-id-gh',
-				'bin/ssh-import-id-lp'],
-				install_requires=["Requests>=1.1.0"
-		],
+		scripts=['bin/ssh-import-id', 'bin/ssh-import-id-gh', 'bin/ssh-import-id-lp'],
+		install_requires=["Requests>=1.1.0"],
 )
