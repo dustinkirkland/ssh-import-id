@@ -1,9 +1,9 @@
-ssh-import-id (4.1) unreleased; urgency=medium
+ssh-import-id (4.1-0ubuntu1) vivid; urgency=medium
 
   * setup.py:
     - clean up some whitespace and indenting issues
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 28 Apr 2014 15:12:47 -0700
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 06 Jan 2015 14:39:26 -0600
 
 ssh-import-id (4.0-0ubuntu1) utopic; urgency=low
 
