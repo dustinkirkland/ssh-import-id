@@ -1,3 +1,9 @@
+ssh-import-id (4.2) unreleased; urgency=medium
+
+  * UNRELEASED
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 06 Jan 2015 14:39:28 -0600
+
 ssh-import-id (4.1-0ubuntu1) vivid; urgency=medium
 
   * setup.py:
