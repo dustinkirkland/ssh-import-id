@@ -4,6 +4,8 @@ ssh-import-id (4.3) unreleased; urgency=medium
     - fix setup.py classifiers
   * setup.py:
     - require 3.2 final
+  * setup.py (properties changed: -x to +x):
+    - make executable
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 05 Oct 2015 17:44:20 -0500
 
