@@ -1,11 +1,11 @@
-ssh-import-id (4.5) unreleased; urgency=medium
+ssh-import-id (4.5-0ubuntu1) wily; urgency=medium
 
   [ Andres Riancho and Dustin Kirkland ]
   * bin/ssh-import-id-gh: LP: #1397332
     - handle two github error conditions (rate limiting and user
       not found)
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 05 Oct 2015 18:15:54 -0500
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 05 Oct 2015 18:32:53 -0500
 
 ssh-import-id (4.4-0ubuntu1) wily; urgency=medium
 
