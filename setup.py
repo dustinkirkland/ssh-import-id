@@ -23,7 +23,7 @@ try:
 	readme = open(os.path.join(os.path.dirname(__file__), "README.md")).read()
 except:
 	readme = "See: http://pypi.python.org/pypi?name=ssh-import-id&:action=display_pkginfo"
-require_python(0x30000f0)
+require_python(0x30200f0)
 setup(
 		name='ssh-import-id',
 		description='Authorize SSH public keys from trusted online identities',
