@@ -1,6 +1,7 @@
 ssh-import-id (4.4) unreleased; urgency=medium
 
-  * UNRELEASED
+  * setup.py:
+    - drop another invalid classifier
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 05 Oct 2015 17:52:29 -0500
 
