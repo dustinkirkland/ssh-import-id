@@ -1,7 +1,10 @@
 ssh-import-id (4.4) unreleased; urgency=medium
 
-  * setup.py:
-    - drop another invalid classifier
+  * bin/ssh-import-id-gh, bin/ssh-import-id-lp, setup_helpers.py,
+    setup.py: LP: #1428840
+    - make ssh-import-id work with both python2.7 and python3
+    - revert previous changes with classifiers and testing for
+      python3
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 05 Oct 2015 17:52:29 -0500
 
