@@ -22,7 +22,10 @@ import os
 import subprocess
 import sys
 import requests
-from urllib.parse import quote_plus
+try:
+	from urllib.parse import quote_plus
+except:
+	from urllib import quote_plus
 
 
 if __name__ == '__main__':
