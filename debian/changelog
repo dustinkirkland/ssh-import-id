@@ -1,4 +1,4 @@
-ssh-import-id (4.4) unreleased; urgency=medium
+ssh-import-id (4.4-0ubuntu1) wily; urgency=medium
 
   * bin/ssh-import-id-gh, bin/ssh-import-id-lp, setup_helpers.py,
     setup.py: LP: #1428840
@@ -6,7 +6,7 @@ ssh-import-id (4.4) unreleased; urgency=medium
     - revert previous changes with classifiers and testing for
       python3
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 05 Oct 2015 17:52:29 -0500
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 05 Oct 2015 18:15:51 -0500
 
 ssh-import-id (4.3-0ubuntu1) wily; urgency=medium
 
