@@ -1,6 +1,7 @@
 ssh-import-id (4.3) unreleased; urgency=medium
 
-  * UNRELEASED
+  * === added symlink README, setup.py, === target is uREADME.md:
+    - fix setup.py classifiers
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 05 Oct 2015 17:44:20 -0500
 

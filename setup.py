@@ -39,8 +39,6 @@ setup(
 		install_requires=["Requests>=1.1.0"],
 		classifiers=[
  			'Development Status :: 5 - Production/Stable',
-			'Intended Audience :: System administrators',
-			'Topic :: Software Development :: System Tools',
 			'License :: OSI Approved :: GPLv3 License',
 			'Programming Language :: Python :: 3',
 			'Programming Language :: Python :: 3.2',
