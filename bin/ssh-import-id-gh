@@ -28,6 +28,10 @@ except:
 	from urllib import quote_plus
 
 
+X_RATELIMIT_REMAINING = 'x-ratelimit-remaining'
+HELP_URL = 'https://developer.github.com/v3/#rate-limiting'
+
+
 if __name__ == '__main__':
 	if not sys.argv[:1]:
 		sys.stderr.write("Usage: %s <github-id>\n" % (sys.argv[0]))
@@ -35,8 +39,15 @@ if __name__ == '__main__':
 	for ghid in sys.argv[1:]:
 		try:
 			url = "https://api.github.com/users/%s/keys" % (quote_plus(ghid))
-			text = requests.get(url, verify=True).text
+			resp = requests.get(url, verify=True)
+			text = resp.text
 			data = json.loads(text)
+			if resp.status_code == 404:
+				print('Username "%s" not found at GitHub API' % ghid)
+				os._exit(1)
+			if X_RATELIMIT_REMAINING in resp.headers and int(resp.headers[X_RATELIMIT_REMAINING]) == 0:
+				print('GitHub REST API rate-limited this IP address. See %s' % HELP_URL)
+				os._exit(1)
 			for keyobj in data:
 				sys.stdout.write("%s %s@github/%s\n" % (keyobj['key'], ghid, keyobj['id']))
 			sys.stdout.flush()
