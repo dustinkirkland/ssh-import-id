@@ -1,8 +1,11 @@
-ssh-import-id (4.2) unreleased; urgency=medium
+ssh-import-id (4.2-0ubuntu1) wily; urgency=medium
 
-  * UNRELEASED
+  [ Barry Warsaw and Dustin Kirkland ]
+  * setup_helpers.py, setup.py:
+    - ensure that pypi/pip installs require python3,
+      https://github.com/cmars/ssh-import-id/issues/6
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 06 Jan 2015 14:39:28 -0600
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 05 Oct 2015 17:44:17 -0500
 
 ssh-import-id (4.1-0ubuntu1) vivid; urgency=medium
 

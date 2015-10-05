@@ -17,11 +17,13 @@
 
 import os
 from setuptools import setup
+from setup_helpers import (description, get_version, long_description, require_python)
 
 try:
 	readme = open(os.path.join(os.path.dirname(__file__), "README.md")).read()
 except:
 	readme = "See: http://pypi.python.org/pypi?name=ssh-import-id&:action=display_pkginfo"
+require_python(0x30000f0)
 setup(
 		name='ssh-import-id',
 		description='Authorize SSH public keys from trusted online identities',
@@ -35,4 +37,14 @@ setup(
 		platforms=['any'],
 		scripts=['bin/ssh-import-id', 'bin/ssh-import-id-gh', 'bin/ssh-import-id-lp'],
 		install_requires=["Requests>=1.1.0"],
+		classifiers=[
+ 			'Development Status :: 5 - Production/Stable',
+			'Intended Audience :: System administrators',
+			'Topic :: Software Development :: System Tools',
+			'License :: OSI Approved :: GPLv3 License',
+			'Programming Language :: Python :: 3',
+			'Programming Language :: Python :: 3.2',
+			'Programming Language :: Python :: 3.3',
+			'Programming Language :: Python :: 3.4',
+		],
 )
