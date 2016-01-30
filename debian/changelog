@@ -1,4 +1,4 @@
-ssh-import-id (5.0) unreleased; urgency=medium
+ssh-import-id (5.0-0ubuntu1) xenial; urgency=medium
 
   * === added directory etc, === added directory etc/ssh, === added
     directory ssh_import_id, === added directory usr, === added
@@ -29,7 +29,7 @@ ssh-import-id (5.0) unreleased; urgency=medium
   * debian/control, ssh_import_id/__init__.py:
     - use pkg_resources to get __version__, depend on package
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 05 Oct 2015 18:32:55 -0500
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Sat, 30 Jan 2016 09:46:50 -0600
 
 ssh-import-id (4.5-0ubuntu1) wily; urgency=medium
 
