@@ -155,14 +155,14 @@ def write_keyfile(keyfile_lines, mode):
 		for line in keyfile_lines:
 			if line:
 				sys.stdout.write(line)
-				sys.stdout.write("\n")
+				sys.stdout.write("\n\n")
 		sys.stdout.flush()
 	elif assert_parent_dir(output_file):
 		with open(output_file, mode) as f:
 			for line in keyfile_lines:
 				if line.strip():
 					f.write(line)
-					f.write("\n")
+					f.write("\n\n")
 
 
 def fp_tuple(fp):
