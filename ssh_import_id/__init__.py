@@ -33,7 +33,7 @@ except:
 	from urllib import quote_plus
 
 
-__version__ = "4.6"
+__version__ = "5.0"
 
 DEFAULT_PROTO = "lp"
 
