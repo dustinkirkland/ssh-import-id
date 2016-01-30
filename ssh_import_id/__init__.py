@@ -21,6 +21,7 @@ import argparse
 import json
 import logging
 import os
+import pkg_resources
 import platform
 import requests
 import stat
@@ -33,19 +34,15 @@ except:
 	from urllib import quote_plus
 
 
-__version__ = "5.0"
-
+__version__ = pkg_resources.get_distribution('ssh_import_id').version
 DEFAULT_PROTO = "lp"
-
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
-
 parser = argparse.ArgumentParser(description='Authorize SSH public keys from trusted online identities.')
 parser.add_argument('-o', '--output', metavar='FILE', help='Write output to file (default ~/.ssh/authorized_keys)')
 parser.add_argument('-r', '--remove', help='Remove a key from authorized keys file', action="store_true", default=False)
 parser.add_argument('-u', '--useragent', metavar='USERAGENT', help='Append to the http user agent string', default="")
 parser.add_argument('userids', nargs='+', metavar="USERID", help='User IDs to import')
 parser.options = None
-
 TEMPFILES = []
 
 

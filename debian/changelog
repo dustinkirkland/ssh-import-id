@@ -26,6 +26,8 @@ ssh-import-id (5.0) unreleased; urgency=medium
     - add scripts back to setup.py
   * ssh_import_id/__init__.py:
     - add extra blank line back, for readability
+  * debian/control, ssh_import_id/__init__.py:
+    - use pkg_resources to get __version__, depend on package
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 05 Oct 2015 18:32:55 -0500
 
