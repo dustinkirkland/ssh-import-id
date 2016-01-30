@@ -24,6 +24,8 @@ ssh-import-id (5.0) unreleased; urgency=medium
     - bump major version to 5.0, major changes here
   * debian/rules, setup.py:
     - add scripts back to setup.py
+  * ssh_import_id/__init__.py:
+    - add extra blank line back, for readability
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 05 Oct 2015 18:32:55 -0500
 
