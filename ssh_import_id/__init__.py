@@ -18,12 +18,22 @@
 # along with ssh-import-id.  If not, see <http://www.gnu.org/licenses/>.
 
 import argparse
+import json
 import logging
 import os
+import platform
+import requests
 import stat
 import subprocess
 import sys
 import tempfile
+try:
+	from urllib.parse import quote_plus
+except:
+	from urllib import quote_plus
+
+
+__version__ = "4.6"
 
 DEFAULT_PROTO = "lp"
 
@@ -32,6 +42,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=loggin
 parser = argparse.ArgumentParser(description='Authorize SSH public keys from trusted online identities.')
 parser.add_argument('-o', '--output', metavar='FILE', help='Write output to file (default ~/.ssh/authorized_keys)')
 parser.add_argument('-r', '--remove', help='Remove a key from authorized keys file', action="store_true", default=False)
+parser.add_argument('-u', '--useragent', metavar='USERAGENT', help='Append to the http user agent string', default="")
 parser.add_argument('userids', nargs='+', metavar="USERID", help='User IDs to import')
 parser.options = None
 
@@ -177,21 +188,19 @@ def key_list(keyfile_lines):
 	return keys
 
 
-def fetch_keys(proto, username):
+def fetch_keys(proto, username, useragent):
 	"""
 	Call out to a subcommand to handle the specified protocol and username
 	"""
-	proto_cmd_path = os.path.join(os.path.dirname(sys.argv[0]), "%s-%s" % (os.path.basename(sys.argv[0]), proto))
-	if not os.path.isfile(proto_cmd_path) or not os.access(proto_cmd_path, os.X_OK):
+	if proto == "lp":
+		return fetch_keys_lp(username, useragent)
+	elif proto == "gh":
+		return fetch_keys_gh(username, useragent)
+	else:
 		die("ssh-import-id protocol handler %s: not found or cannot execute" % (proto_cmd_path))
-	proc = subprocess.Popen([proto_cmd_path, username], stdout=subprocess.PIPE)
-	output, _ = proc.communicate(None)
-	if proc.returncode:
-		raise Exception("Error executing protocol helper [%s]" % proto_cmd_path)
-	return output.split(b"\n")
 
 
-def import_keys(proto, username):
+def import_keys(proto, username, useragent):
 	"""
 	Import keys from service at 'proto' for 'username', appending to output file
 	"""
@@ -201,9 +210,12 @@ def import_keys(proto, username):
 	result = []
 	keyfile_lines = []
 	comment_string = "# ssh-import-id %s:%s" % (proto, username)
-	for line in fetch_keys(proto, username):
+	for line in fetch_keys(proto, username, useragent).split('\n'):
 		# Validate/clean-up key text
-		line = line.decode('utf-8').strip()
+		try:
+			line = line.decode('utf-8').strip()
+		except:
+			line = line.strip()
 		fields = line.split()
 		fields.append(comment_string)
 		ssh_fp = key_fingerprint(fields)
@@ -238,35 +250,60 @@ def remove_keys(proto, username):
 	return removed
 
 
-if __name__ == '__main__':
-	errors = []
+def user_agent(extra=""):
+	""""
+	Construct a useful user agent string
+	"""
+	ssh_import_id = "ssh-import-id/%s" % __version__
+	python = "python/%d.%d.%d" % (sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
+	distro = "/".join(platform.dist())
+	uname = "%s/%s/%s" % (os.uname()[0], os.uname()[2], os.uname()[4])
+	return "%s %s %s %s %s" % (ssh_import_id, python, distro, uname, extra)
+
+
+def fetch_keys_lp(lpid, useragent):
 	try:
-		os.umask(0o177)
-		parser.options = parser.parse_args()
-		keys = []
-		for userid in parser.options.userids:
-			user_pieces = userid.split(':')
-			if len(user_pieces) == 2:
-				proto, username = user_pieces
-			elif len(user_pieces) == 1:
-				proto, username = DEFAULT_PROTO, userid
-			else:
-				die("Invalid user ID: [%s]" % (userid))
-			if parser.options.remove:
-				k = remove_keys(proto, username)
-				keys.extend(k)
-				action = "Removed"
-			else:
-				k = import_keys(proto, username)
-				keys.extend(k)
-				action = "Authorized"
-			if len(k) == 0:
-				errors.append(userid)
-		logging.info("[%d] SSH keys [%s]" % (len(keys), action))
+		url = os.getenv("URL", None)
+		if url is None and os.path.exists("/etc/ssh/ssh_import_id"):
+			try:
+				conf = json.loads(open("/etc/ssh/ssh_import_id").read())
+				url = conf.get("URL", None) % (quote_plus(lpid))
+			except:
+				raise Exception("Ensure that URL is defined in [/etc/ssh/ssh_import_id] is in JSON syntax")
+		elif url is not None:
+			url = url % (quote_plus(lpid))
+		# Finally, fall back to Launchpad
+		if url is None:
+			url = "https://launchpad.net/~%s/+sshkeys" % (quote_plus(lpid))
+		headers = {'User-Agent': user_agent(useragent)}
+		text = requests.get(url, verify=True, headers=headers).text
+		keys = str(text)
 	except (Exception,):
 		e = sys.exc_info()[1]
-		die("%s" % (str(e)))
-	cleanup()
-	if len(errors) > 0:
-		die("No matching keys found for [%s]" % ','.join(errors))
-	os._exit(0)
+		sys.stderr.write("ERROR: %s\n" % (str(e)))
+		os._exit(1)
+	return keys
+
+
+def fetch_keys_gh(ghid, useragent):
+	x_ratelimit_remaining = 'x-ratelimit-remaining'
+	help_url = 'https://developer.github.com/v3/#rate-limiting'
+	try:
+		url = "https://api.github.com/users/%s/keys" % (quote_plus(ghid))
+		headers = {'User-Agent': user_agent()}
+		resp = requests.get(url, headers=headers, verify=True)
+		text = resp.text
+		data = json.loads(text)
+		if resp.status_code == 404:
+			print('Username "%s" not found at GitHub API' % ghid)
+			os._exit(1)
+		if x_ratelimit_remaining in resp.headers and int(resp.headers[x_ratelimit_remaining]) == 0:
+			print('GitHub REST API rate-limited this IP address. See %s' % help_url)
+			os._exit(1)
+		for keyobj in data:
+			keys = "%s %s@github/%s\n" % (keyobj['key'], ghid, keyobj['id'])
+	except (Exception,):
+		e = sys.exc_info()[1]
+		sys.stderr.write("ERROR: %s\n" % (str(e)))
+		os._exit(1)
+	return keys

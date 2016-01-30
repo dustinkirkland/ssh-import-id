@@ -1,6 +1,25 @@
 ssh-import-id (4.6) unreleased; urgency=medium
 
-  * UNRELEASED
+  * === added directory etc, === added directory etc/ssh, === added
+    directory ssh_import_id, === added directory usr, === added
+    directory usr/bin, === added directory usr/share, === added
+    directory usr/share/man, === added directory usr/share/man/man1,
+    bin/ssh-import-id-gh => usr/bin/ssh-import-id-gh, bin/ssh-import-id-
+    lp => usr/bin/ssh-import-id-lp, bin/ssh-import-id =>
+    ssh_import_id/__init__.py (properties changed: +x to -x),
+    debian/control, debian/install, debian/manpages, debian/rules, ===
+    removed directory bin, setup.py, ssh-import-id.1 =>
+    usr/share/man/man1/ssh-import-id.1, ssh_import_id =>
+    etc/ssh/ssh_import_id, usr/bin/ssh-import-id:
+    - build depend on dh-python
+    - simplify package install, etc/ and usr/
+    - syntax check both locations
+    - build an ssh_import_id python package/module
+    - put all common functionality into an ssh_import_id module
+    - add a browser useragent string, for protocol version support on the server
+    - move ssh-import-id-lp and ssh-import-id-gh functionality into a base
+      python function, and wrap those with shell
+    - remove a couple of subcommand shell outs by using native python calls
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 05 Oct 2015 18:32:55 -0500
 
