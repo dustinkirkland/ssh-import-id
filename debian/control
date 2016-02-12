@@ -22,6 +22,7 @@ Depends: ca-certificates,
          python3-requests (>= 1.1.0),
          wget,
          ${misc:Depends},
+         ${shlibs:Depends},
          ${python3:Depends}
 Recommends: openssh-server
 Description: securely retrieve an SSH public key and install it locally
