@@ -1,6 +1,7 @@
 ssh-import-id (5.2) unreleased; urgency=medium
 
-  * UNRELEASED
+  * debian/control:
+    - try to fix ftbfs, seems we need python3-requests in the build stage
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Thu, 11 Feb 2016 22:13:40 -0600
 
