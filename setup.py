@@ -34,7 +34,6 @@ setup(
 	url='https://launchpad.net/ssh-import-id',
 	platforms=['any'],
 	packages=['ssh_import_id'],
-	py_modules=['ssh_import_id'],
 	scripts=['usr/bin/ssh-import-id', 'usr/bin/ssh-import-id-gh', 'usr/bin/ssh-import-id-lp'],
 	install_requires=["Requests>=1.1.0"],
 )

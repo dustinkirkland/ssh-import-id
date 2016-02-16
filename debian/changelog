@@ -1,6 +1,7 @@
 ssh-import-id (5.3) unreleased; urgency=medium
 
-  * UNRELEASED
+  * setup.py:
+    - try fixing ftbfs by removing py_modules
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 16 Feb 2016 11:24:49 -0800
 
