@@ -1,9 +1,9 @@
-ssh-import-id (5.2) unreleased; urgency=medium
+ssh-import-id (5.2-0ubuntu1) xenial; urgency=medium
 
   * debian/control:
     - try to fix ftbfs, seems we need python3-requests in the build stage
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Thu, 11 Feb 2016 22:13:40 -0600
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 16 Feb 2016 11:24:48 -0800
 
 ssh-import-id (5.1-0ubuntu1) xenial; urgency=medium
 
