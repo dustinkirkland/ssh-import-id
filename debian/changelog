@@ -1,6 +1,8 @@
 ssh-import-id (5.4) unreleased; urgency=medium
 
-  * UNRELEASED
+  * debian/rules:
+    - disable python 3.5 tests;  fix ftbfs as unit tests try to import
+      ssh_import_id, which is the module we're trying to build here
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 16 Feb 2016 12:16:59 -0800
 
