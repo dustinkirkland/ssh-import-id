@@ -21,7 +21,6 @@ import argparse
 import json
 import logging
 import os
-import pkg_resources
 import platform
 import requests
 import stat
@@ -34,7 +33,7 @@ except:
 	from urllib import quote_plus
 
 
-__version__ = pkg_resources.get_distribution('ssh_import_id').version
+__version__ = '5.5'
 DEFAULT_PROTO = "lp"
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
 parser = argparse.ArgumentParser(description='Authorize SSH public keys from trusted online identities.')

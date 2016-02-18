@@ -1,6 +1,10 @@
 ssh-import-id (5.5) unreleased; urgency=medium
 
-  * UNRELEASED
+  * debian/control, debian/rules, setup.py, ssh_import_id/__init__.py:
+    - patches adapted from Barry Warsaw
+    - drop pkg_resources as a dependency
+    - hardcode/update module version in __init__.py
+    - should fix python 3.5 unit test failures
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 16 Feb 2016 16:54:15 -0800
 

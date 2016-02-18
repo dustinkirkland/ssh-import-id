@@ -17,6 +17,7 @@
 
 import os
 from setuptools import setup
+from ssh_import_id import __version__
 
 try:
 	readme = open(os.path.join(os.path.dirname(__file__), "README.md")).read()
@@ -26,7 +27,7 @@ setup(
 	name='ssh-import-id',
 	description='Authorize SSH public keys from trusted online identities',
 	long_description=readme,
-	version='5.5',
+	version=__version__,
 	author='Dustin Kirkland, Casey Marshall',
 	author_email='dustin.kirkland@gmail.com, casey.marshall@gmail.com',
 	license="GPLv3",
