@@ -1,7 +1,5 @@
 #!/usr/bin/make -f
 
-export PYBUILD_DISABLE=test
-
 override_dh_auto_build:
 	# Check syntax
 	python3 /usr/lib/python3/dist-packages/pep8.py --verbose --repeat --ignore W191,E501,E121 ssh_import_id/* usr/bin/ssh-import-id

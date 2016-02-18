@@ -19,7 +19,6 @@ Package: ssh-import-id
 Architecture: all
 Depends: ca-certificates,
          openssh-client,
-         python3-pkg-resources,
          python3-requests (>= 1.1.0),
          wget,
          ${misc:Depends},
