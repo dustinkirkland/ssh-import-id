@@ -1,4 +1,4 @@
-ssh-import-id (5.5) unreleased; urgency=medium
+ssh-import-id (5.5-0ubuntu1) xenial; urgency=medium
 
   * debian/control, debian/rules, setup.py, ssh_import_id/__init__.py:
     - patches adapted from Barry Warsaw
@@ -6,7 +6,7 @@ ssh-import-id (5.5) unreleased; urgency=medium
     - hardcode/update module version in __init__.py
     - should fix python 3.5 unit test failures
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 16 Feb 2016 16:54:15 -0800
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Thu, 18 Feb 2016 12:38:56 -0800
 
 ssh-import-id (5.4-0ubuntu1) xenial; urgency=medium
 
