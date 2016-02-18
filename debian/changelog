@@ -1,3 +1,9 @@
+ssh-import-id (5.6) unreleased; urgency=medium
+
+  * UNRELEASED
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Thu, 18 Feb 2016 12:38:57 -0800
+
 ssh-import-id (5.5-0ubuntu1) xenial; urgency=medium
 
   * debian/control, debian/rules, setup.py, ssh_import_id/__init__.py:

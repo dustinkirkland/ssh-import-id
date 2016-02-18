@@ -33,7 +33,7 @@ except:
 	from urllib import quote_plus
 
 
-__version__ = '5.5'
+__version__ = '5.6'
 DEFAULT_PROTO = "lp"
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
 parser = argparse.ArgumentParser(description='Authorize SSH public keys from trusted online identities.')
