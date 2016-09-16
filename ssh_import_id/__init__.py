@@ -284,6 +284,7 @@ def fetch_keys_lp(lpid, useragent):
 def fetch_keys_gh(ghid, useragent):
 	x_ratelimit_remaining = 'x-ratelimit-remaining'
 	help_url = 'https://developer.github.com/v3/#rate-limiting'
+	keys = ""
 	try:
 		url = "https://api.github.com/users/%s/keys" % (quote_plus(ghid))
 		headers = {'User-Agent': user_agent()}
@@ -297,7 +298,7 @@ def fetch_keys_gh(ghid, useragent):
 			print('GitHub REST API rate-limited this IP address. See %s' % help_url)
 			os._exit(1)
 		for keyobj in data:
-			keys = "%s %s@github/%s\n" % (keyobj['key'], ghid, keyobj['id'])
+			keys += "%s %s@github/%s\n" % (keyobj['key'], ghid, keyobj['id'])
 	except (Exception,):
 		e = sys.exc_info()[1]
 		sys.stderr.write("ERROR: %s\n" % (str(e)))
