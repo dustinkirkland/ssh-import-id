@@ -18,6 +18,7 @@
 # along with ssh-import-id.  If not, see <http://www.gnu.org/licenses/>.
 
 import argparse
+import getpass
 import json
 import logging
 import os
@@ -132,7 +133,15 @@ def read_keyfile():
 	Locate key file, read the current state, return lines in a list
 	"""
 	lines = []
-	output_file = parser.options.output or os.path.join(os.getenv("HOME"), ".ssh", "authorized_keys")
+	if parser.options.output:
+		output_file = parser.options.output
+	else:
+		if os.environ.get("HOME"):
+			home = os.environ["HOME"]
+		else
+			home = os.path.expanduser("~" + getpass.getuser())
+		output_file = os.path.join(home, ".ssh", "authorized_keys")
+
 	if os.path.exists(output_file):
 		try:
 			with open(output_file, "r") as f:
