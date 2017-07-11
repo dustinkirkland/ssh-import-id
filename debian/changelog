@@ -1,6 +1,12 @@
 ssh-import-id (5.7) unreleased; urgency=medium
 
-  * UNRELEASED
+  [ Scott Moser ]
+  * ssh_import_id/__init__.py: LP: #1570997
+    - read_keyfile: use getpass and expanduser if HOME not set.
+      If the HOME environment variable was not set, then use getpass and
+      expanduser to try to find the right path.
+      Recreate was as simple as:
+        env -u HOME ssh-import-id bob
 
  -- Dustin Kirkland <kirkland@ubuntu.com>  Fri, 16 Sep 2016 10:13:35 -0500
 
