@@ -1,3 +1,9 @@
+ssh-import-id (5.8) unreleased; urgency=medium
+
+  * UNRELEASED
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 11 Jul 2017 15:51:44 -0500
+
 ssh-import-id (5.7-0ubuntu1) artful; urgency=medium
 
   [ Dustin Kirkland ]
