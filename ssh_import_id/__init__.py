@@ -138,7 +138,7 @@ def read_keyfile():
 	else:
 		if os.environ.get("HOME"):
 			home = os.environ["HOME"]
-		else
+		else:
 			home = os.path.expanduser("~" + getpass.getuser())
 		output_file = os.path.join(home, ".ssh", "authorized_keys")
 
