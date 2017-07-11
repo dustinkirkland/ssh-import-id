@@ -1,4 +1,4 @@
-ssh-import-id (5.7) unreleased; urgency=medium
+ssh-import-id (5.7-0ubuntu1) artful; urgency=medium
 
   [ Scott Moser ]
   * ssh_import_id/__init__.py: LP: #1570997
@@ -12,7 +12,7 @@ ssh-import-id (5.7) unreleased; urgency=medium
   * ssh_import_id/__init__.py:
     - fix typo, missing colon
 
- -- Dustin Kirkland <kirkland@ubuntu.com>  Fri, 16 Sep 2016 10:13:35 -0500
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 11 Jul 2017 15:51:42 -0500
 
 ssh-import-id (5.6-0ubuntu1) yakkety; urgency=medium
 
