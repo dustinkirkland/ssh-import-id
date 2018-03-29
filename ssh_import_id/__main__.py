@@ -17,10 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with ssh-import-id.  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
+from ssh_import_id import _main
+
 if __name__ == '__main__':
-	import sys
-	import ssh_import_id
-
-	sys.exit(ssh_import_id._main())
-
-# vi: ts=4 noexpandtab syntax=python
+    sys.exit(_main())

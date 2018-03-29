@@ -1,5 +1,7 @@
 #!/usr/bin/make -f
 
+DEB_VERSION := $(shell dpkg-parsechangelog --show-field=Version)
+
 override_dh_auto_build:
 	# Check syntax
 	python3 -m pep8 --verbose --ignore W191,E501,E121 ssh_import_id/ usr/bin/
@@ -7,3 +9,9 @@ override_dh_auto_build:
 
 %:
 	dh $@ --with python3 --buildsystem=pybuild
+
+override_dh_auto_install:
+	dh_auto_install
+	# upstream provides a way to patch in the distro
+	# version by replacing @@PACKAGED_VERSION@@ in version.py
+	for f in $$(find $(CURDIR)/debian/ -type f -name version.py); do [ -f "$$f" ] || continue; sed -i 's,@@PACKAGED_VERSION@@,$(DEB_VERSION),' "$$f"; done

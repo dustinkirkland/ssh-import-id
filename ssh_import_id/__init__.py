@@ -33,11 +33,14 @@ try:
 except:
 	from urllib import quote_plus
 
+from ssh_import_id.version import VERSION
 
-__version__ = '5.8'
+
 DEFAULT_PROTO = "lp"
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
-parser = argparse.ArgumentParser(description='Authorize SSH public keys from trusted online identities.')
+parser = argparse.ArgumentParser(
+	description='Authorize SSH public keys from trusted online identities.',
+	prog="ssh-import-id")
 parser.add_argument('-o', '--output', metavar='FILE', help='Write output to file (default ~/.ssh/authorized_keys)')
 parser.add_argument('-r', '--remove', help='Remove a key from authorized keys file', action="store_true", default=False)
 parser.add_argument('-u', '--useragent', metavar='USERAGENT', help='Append to the http user agent string', default="")
@@ -259,7 +262,7 @@ def user_agent(extra=""):
 	""""
 	Construct a useful user agent string
 	"""
-	ssh_import_id = "ssh-import-id/%s" % __version__
+	ssh_import_id = "ssh-import-id/%s" % VERSION
 	python = "python/%d.%d.%d" % (sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
 	distro = "/".join(platform.dist())
 	uname = "%s/%s/%s" % (os.uname()[0], os.uname()[2], os.uname()[4])
@@ -313,3 +316,37 @@ def fetch_keys_gh(ghid, useragent):
 		sys.stderr.write("ERROR: %s\n" % (str(e)))
 		os._exit(1)
 	return keys
+
+
+def _main():
+	errors = []
+	try:
+		os.umask(0o177)
+		parser.options = parser.parse_args()
+		keys = []
+		for userid in parser.options.userids:
+			user_pieces = userid.split(':')
+			if len(user_pieces) == 2:
+				proto, username = user_pieces
+			elif len(user_pieces) == 1:
+				proto, username = DEFAULT_PROTO, userid
+			else:
+				die("Invalid user ID: [%s]" % (userid))
+			if parser.options.remove:
+				k = remove_keys(proto, username)
+				keys.extend(k)
+				action = "Removed"
+			else:
+				k = import_keys(proto, username, parser.options.useragent)
+				keys.extend(k)
+				action = "Authorized"
+			if len(k) == 0:
+				errors.append(userid)
+		logging.info("[%d] SSH keys [%s]" % (len(keys), action))
+	except (Exception,):
+		e = sys.exc_info()[1]
+		die("%s" % (str(e)))
+	cleanup()
+	if len(errors) > 0:
+		die("No matching keys found for [%s]" % ','.join(errors))
+	os._exit(0)
