@@ -17,7 +17,19 @@
 
 import os
 from setuptools import setup
-from ssh_import_id import __version__
+import sys
+
+def read_version():
+	# shove 'version' into the path so we can import it without going through
+	# ssh_import_id which has deps that wont be available at setup.py time.
+	# specifically, from 'ssh_import_id import version'
+	# will fail due to requests not available.
+	verdir = os.path.abspath(
+		os.path.join(os.path.dirname(__file__), "ssh_import_id"))
+	sys.path.insert(0, verdir)
+	import version
+	return version.VERSION
+
 
 try:
 	readme = open(os.path.join(os.path.dirname(__file__), "README.md")).read()
@@ -27,7 +39,7 @@ setup(
 	name='ssh-import-id',
 	description='Authorize SSH public keys from trusted online identities',
 	long_description=readme,
-	version=__version__,
+	version=read_version(),
 	author='Dustin Kirkland, Casey Marshall',
 	author_email='dustin.kirkland@gmail.com, casey.marshall@gmail.com',
 	license="GPLv3",
@@ -35,6 +47,13 @@ setup(
 	url='https://launchpad.net/ssh-import-id',
 	platforms=['any'],
 	packages=['ssh_import_id'],
-	scripts=['usr/bin/ssh-import-id', 'usr/bin/ssh-import-id-gh', 'usr/bin/ssh-import-id-lp'],
-	install_requires=["Requests>=1.1.0"],
+	scripts=['usr/bin/ssh-import-id-gh', 'usr/bin/ssh-import-id-lp'],
+	install_requires=["requests>=1.1.0"],
+	entry_points={
+		'console_scripts': [
+			'ssh-import-id = ssh_import_id:main'
+		],
+	}
 )
+
+# vi: ts=4 noexpandtab syntax=python

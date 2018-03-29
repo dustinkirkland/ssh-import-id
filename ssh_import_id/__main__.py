@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-#
 # ssh-import-id - Authorize SSH public keys from trusted online identities
 #
 # Copyright (c) 2013 Casey Marshall <casey.marshall@gmail.com>
@@ -17,8 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with ssh-import-id.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
-from ssh_import_id import _main
+from ssh_import_id import main
 
 if __name__ == '__main__':
-    sys.exit(_main())
+    main()

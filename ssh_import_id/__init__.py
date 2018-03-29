@@ -33,7 +33,7 @@ try:
 except:
 	from urllib import quote_plus
 
-from ssh_import_id.version import VERSION
+from .version import VERSION
 
 
 DEFAULT_PROTO = "lp"
@@ -318,7 +318,7 @@ def fetch_keys_gh(ghid, useragent):
 	return keys
 
 
-def _main():
+def main():
 	errors = []
 	try:
 		os.umask(0o177)
