@@ -1,0 +1,118 @@
+#!/bin/sh
+# This file is part of ssh-import-id. See LICENSE file for more info.
+
+set -e
+
+TEMP_D=""
+UNCOMMITTED=${UNCOMMITTED:-0}
+RELEASE=${RELEASE:-UNRELEASED}
+
+fail() { echo "$@" 1>&2; exit 1; }
+cleanup() {
+   [ -z "$TEMP_D" ] || rm -Rf "$TEMP_D"
+}
+
+if [ "$1" = "-h" -o "$1" = "--help" ]; then
+   cat <<EOF
+Usage: ${0##*/}
+   build a deb of from trunk directory
+   any options are passed straight through to debuild
+
+   Example:
+    * ${0##*/} -us -uc
+
+   Its not significantly different than what you'd get by modifying
+   the debian/changelog to have the current revno, and then running
+     debuild --no-tgz-check
+EOF
+exit
+fi
+
+bname=${0##*/}
+
+start_d=$PWD
+top_d=$(cd "$(dirname "${0}")"/.. && pwd)
+ref=HEAD
+
+if [ $# -eq 0 ]; then
+   # if no opts given, build source, without depends, and not signed.
+   set -- -S -d -us -uc
+fi
+
+# grab the first line in the changelog
+# hopefully this pulls the version info there
+# resulting in something like: UPSTREAM_VER-0ubuntu1
+clogver_o=$(sed -n '1s,.*(\([^)]*\)).*,\1,p' debian/changelog.trunk)
+sourcename=$(awk '{print $1; exit(0);}' debian/changelog.trunk)
+
+# uver gets 5.7-1-gc85e2562, and 5.7 (just the release number) for a tag.
+uver=$(git describe --long --abbrev=8 "--match=[0-9].*" "$ref")
+clogver_debian=${clogver_o##*-}
+clogver_new="${uver}-${clogver_debian}"
+
+# uver_base_rel rel gets just last upstream version '5.7'
+uver_base_rel=${uver%%-*}
+if [ "${uver_base_rel}" = "${uver}" ]; then
+   echo "building from a tagged version ($uver)" 1>&2
+fi
+
+TEMP_D=$(mktemp -d "${TMPDIR:-/tmp}/${bname}.XXXXXX")
+
+trap cleanup EXIT
+
+echo "building version ${uver}, debian_ver=${clogver_debian}"
+
+dir="${sourcename}-$uver"
+tarball="${sourcename}_$uver.orig.tar.gz"
+
+myd=$(dirname "$0")
+"$myd/make-tarball" --output="$TEMP_D/$tarball" --long "$ref"
+echo "created ${tarball}"
+
+cd "${TEMP_D}"
+tar xzf "$tarball" || fail "failed extract tarball"
+
+if [ ! -d "$dir" ]; then
+    # make-tarball will create the directory name based on the
+    # contents of debian/changelog.trunk in the version provided.
+    # if that differs from what is here, then user has changes.
+    for d in ${sourcename}*; do
+        [ -d "$d" ] && break
+    done
+    if [ -d "$d" ]; then
+        {
+        echo "WARNING: git at '${uver}' had different version"
+        echo "  in debian/changelog.trunk than your tree. version there"
+        echo "  is '$d' working directory had $uver"
+        } 1>&2
+        dir=$d
+    else
+        echo "did not find a directory created by make-tarball. sorry." 1>&2
+        exit
+    fi
+fi
+cd "$dir" || fail "failed cd $dir"
+
+# move files ending in .trunk to name without .trunk
+# ie, this copies debian/changelog.trunk to debian/changelog
+for f in debian/*.trunk; do
+   mv "$f" "${f%.trunk}"
+done
+
+# first line of debian/changelog looks like
+#   curtin (<version>) UNRELEASED; urgency=low
+# fix the version and UNRELEASED
+sed -i -e "1s,([^)]*),(${clogver_new})," \
+       -e "1s,UNRELEASED,${RELEASE}," debian/changelog ||
+   fail "failed to write debian/changelog"
+debuild "$@" || fail "debuild failed"
+
+cd "$TEMP_D"
+for f in *; do
+   [ -f "$f" ] || continue
+   cp "$f" "$start_d" || fail "failed copy $f"
+   echo "wrote $f"
+done
+exit
+
+# vi: ts=4 expandtab syntax=sh
