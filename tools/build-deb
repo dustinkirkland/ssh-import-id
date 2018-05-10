@@ -46,7 +46,9 @@ clogver_o=$(sed -n '1s,.*(\([^)]*\)).*,\1,p' debian/changelog.trunk)
 sourcename=$(awk '{print $1; exit(0);}' debian/changelog.trunk)
 
 # uver gets 5.7-1-gc85e2562, and 5.7 (just the release number) for a tag.
-uver=$(git describe --long --abbrev=8 "--match=[0-9].*" "$ref")
+uver=$(git describe \
+    --tags --exclude "*-0ubuntu1" \
+    --long --abbrev=8 "--match=[0-9].*" "$ref")
 clogver_debian=${clogver_o##*-}
 clogver_new="${uver}-${clogver_debian}"
 
