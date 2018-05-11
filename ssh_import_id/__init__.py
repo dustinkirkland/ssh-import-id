@@ -330,12 +330,14 @@ def fetch_keys_gh(ghid, useragent):
         resp = requests.get(url, headers=headers, verify=True)
         text = resp.text
         data = json.loads(text)
-        if resp.status_code == 404:
-            die('Username "%s" not found at GitHub API' % ghid)
-        if (x_ratelimit_remaining in resp.headers and
-                int(resp.headers[x_ratelimit_remaining]) == 0):
-            die('GitHub REST API rate-limited this IP address. See %s' %
-                help_url)
+        if resp.status_code != 200:
+            msg = 'Requesting GitHub keys failed.'
+            if resp.status_code == 404:
+                msg = 'Username "%s" not found at GitHub API.' % ghid
+            elif resp.headers.get(x_ratelimit_remaining) == "0":
+                msg = ('GitHub REST API rate-limited this IP address. See %s .'
+                       % help_url)
+            die(msg + " status_code=%d user=%s" % (resp.status_code, ghid))
         for keyobj in data:
             keys += "%s %s@github/%s\n" % (keyobj['key'], ghid, keyobj['id'])
     # pylint: disable=broad-except
