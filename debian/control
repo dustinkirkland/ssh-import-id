@@ -6,7 +6,6 @@ Uploaders: Andrew Starr-Bochicchio <asb@debian.org>
 Build-Depends: debhelper (>= 8),
                dh-python,
                python3-all,
-               python3-pep8,
                python3-requests (>= 1.1.0),
                python3-setuptools
 Standards-Version: 4.1.3
