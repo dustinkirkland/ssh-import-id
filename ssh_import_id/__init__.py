@@ -371,9 +371,8 @@ def main():
                 errors.append(userid)
         logging.info("[%d] SSH keys [%s]", len(keys), action)
     # pylint: disable=broad-except
-    except (Exception,):
-        e = sys.exc_info()[1]
-        die("%s" % (str(e)))
+    except Exception as e:
+        die(str(e))
     cleanup()
     if errors:
         die("No matching keys found for [%s]" % ','.join(errors))
