@@ -315,10 +315,8 @@ def fetch_keys_lp(lpid, useragent):
         text = requests.get(url, verify=True, headers=headers).text
         keys = str(text)
     # pylint: disable=broad-except
-    except (Exception,):
-        e = sys.exc_info()[1]
-        sys.stderr.write("ERROR: %s\n" % (str(e)))
-        os._exit(1)
+    except Exception as e:
+        die(str(e))
     return keys
 
 
@@ -333,20 +331,16 @@ def fetch_keys_gh(ghid, useragent):
         text = resp.text
         data = json.loads(text)
         if resp.status_code == 404:
-            print('Username "%s" not found at GitHub API' % ghid)
-            os._exit(1)
+            die('Username "%s" not found at GitHub API' % ghid)
         if (x_ratelimit_remaining in resp.headers and
                 int(resp.headers[x_ratelimit_remaining]) == 0):
-            print('GitHub REST API rate-limited this IP address. See %s' %
-                  help_url)
-            os._exit(1)
+            die('GitHub REST API rate-limited this IP address. See %s' %
+                help_url)
         for keyobj in data:
             keys += "%s %s@github/%s\n" % (keyobj['key'], ghid, keyobj['id'])
     # pylint: disable=broad-except
-    except (Exception,):
-        e = sys.exc_info()[1]
-        sys.stderr.write("ERROR: %s\n" % (str(e)))
-        os._exit(1)
+    except Exception as e:
+        die(str(e))
     return keys
 
 
