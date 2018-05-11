@@ -6,6 +6,6 @@ _PACKAGED_VERSION = '@@PACKAGED_VERSION@@'
 VERSION = _LAST_RELEASE
 
 if not _PACKAGED_VERSION.startswith("@@"):
-	VERSION = _PACKAGED_VERSION
+    VERSION = _PACKAGED_VERSION
 
-# vi: ts=4 noexpandtab syntax=python
+# vi: ts=4 expandtab syntax=python

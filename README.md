@@ -15,33 +15,33 @@ Usage
 
 ssh-import-id uses short prefix to indicate the location of the online identity. For now, these are:
 
-	'gh:' for Github
-	'lp:' for Launchpad
+    'gh:' for Github
+    'lp:' for Launchpad
 
 Command line help:
 
-	usage: ssh-import-id [-h] [-o FILE] USERID [USERID ...]
+    usage: ssh-import-id [-h] [-o FILE] USERID [USERID ...]
 
-	Authorize SSH public keys from trusted online identities.
+    Authorize SSH public keys from trusted online identities.
 
-	positional arguments:
-  	USERID                User IDs to import
+    positional arguments:
+      USERID                User IDs to import
 
-	optional arguments:
-  	-h, --help            show this help message and exit
-  	-o FILE, --output FILE
-                        	Write output to file (default ~/.ssh/authorized_keys)
+    optional arguments:
+      -h, --help            show this help message and exit
+      -o FILE, --output FILE
+                            Write output to file (default ~/.ssh/authorized_keys)
 
 Example
 -------
 
 If you wanted me to be able to ssh into your server, as the desired user on that machine you would use:
 
-	$ ssh-import-id gh:cmars
+    $ ssh-import-id gh:cmars
 
 You can also import multiple users on the same line, even from different key services, like so:
 
-	$ ssh-import-id gh:cmars lp:kirkland
+    $ ssh-import-id gh:cmars lp:kirkland
 
 Used with care, it's a great collaboration tool!
 
@@ -50,7 +50,7 @@ Installing
 
 ssh-import-id can be installed on Python >= 2.6 with a recent version of pip:
 
-	$ pip install ssh-import-id
+    $ pip install ssh-import-id
 
 ssh-import-id requires a recent version of Requests (>=1.1.0) for verified SSL/TLS connections.
 

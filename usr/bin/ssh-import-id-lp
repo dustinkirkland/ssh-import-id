@@ -19,5 +19,5 @@
 set -e
 
 for i in $@; do
-	ssh-import-id lp:$i
+    ssh-import-id lp:$i
 done
