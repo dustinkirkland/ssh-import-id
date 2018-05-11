@@ -152,22 +152,16 @@ def read_keyfile():
     """
     Locate key file, read the current state, return lines in a list
     """
-    lines = []
-    if parser.options.output:
-        output_file = parser.options.output
+    keyfile = get_keyfile(parser.options.output)
+    if keyfile == "-" or not os.path.exists(keyfile):
+        lines = []
     else:
-        if os.environ.get("HOME"):
-            home = os.environ["HOME"]
-        else:
-            home = os.path.expanduser("~" + getpass.getuser())
-        output_file = os.path.join(home, ".ssh", "authorized_keys")
-
-    if os.path.exists(output_file):
         try:
-            with open(output_file, "r") as f:
-                lines = f.readlines()
+            with open(keyfile, "r") as fp:
+                lines = fp.readlines()
         except OSError:
-            die("Could not read authorized key file [%s]" % (output_file))
+            die("Could not read authorized key file [%s]" % (keyfile))
+
     return lines
 
 
@@ -175,8 +169,7 @@ def write_keyfile(keyfile_lines, mode):
     """
     Locate key file, write lines to it
     """
-    output_file = (parser.options.output or
-                   os.path.join(os.getenv("HOME"), ".ssh", "authorized_keys"))
+    output_file = get_keyfile(parser.options.output)
     if output_file == "-":
         for line in keyfile_lines:
             if line:
@@ -189,6 +182,18 @@ def write_keyfile(keyfile_lines, mode):
                 if line.strip():
                     f.write(line)
                     f.write("\n\n")
+
+
+def get_keyfile(path=None):
+    """Return 'path' if true, else a path to current user's authorized_keys."""
+    if not path:
+        if os.environ.get("HOME"):
+            home = os.environ["HOME"]
+        else:
+            home = os.path.expanduser("~" + getpass.getuser())
+
+        path = os.path.join(home, ".ssh", "authorized_keys")
+    return path
 
 
 def fp_tuple(fp):
