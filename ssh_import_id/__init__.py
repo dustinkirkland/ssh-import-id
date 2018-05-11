@@ -225,7 +225,7 @@ def fetch_keys(proto, username, useragent):
         return fetch_keys_gh(username, useragent)
 
     die("ssh-import-id protocol handler %s: not found or cannot execute" %
-        (proto_cmd_path))
+        (proto))
 
 
 def import_keys(proto, username, useragent):
