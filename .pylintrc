@@ -1,5 +1,6 @@
 [MESSAGES CONTROL]
 disable=
+  inconsistent-return-statements,
   invalid-name,
   missing-docstring,
 

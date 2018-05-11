@@ -121,8 +121,7 @@ def open_output(name, mode='a+'):
     """
     if name == '-':
         return False
-    else:
-        return open(name, mode)
+    return open(name, mode)
 
 
 def assert_parent_dir(keyfile):
@@ -212,7 +211,7 @@ def key_list(keyfile_lines):
         ssh_fp = key_fingerprint(line.split())
         if ssh_fp:
             keys.append(fp_tuple(ssh_fp))
-    logging.debug("Already have SSH public keys: [%s]" % (' '.join(keys)))
+    logging.debug("Already have SSH public keys: [%s]", ' '.join(keys))
     return keys
 
 
@@ -224,9 +223,9 @@ def fetch_keys(proto, username, useragent):
         return fetch_keys_lp(username, useragent)
     elif proto == "gh":
         return fetch_keys_gh(username, useragent)
-    else:
-        die("ssh-import-id protocol handler %s: not found or cannot execute" %
-            (proto_cmd_path))
+
+    die("ssh-import-id protocol handler %s: not found or cannot execute" %
+        (proto_cmd_path))
 
 
 def import_keys(proto, username, useragent):
@@ -254,7 +253,7 @@ def import_keys(proto, username, useragent):
             else:
                 keyfile_lines.append(" ".join(fields))
                 result.append(fields)
-                logging.info("Authorized key %s" % (ssh_fp[:3] + ssh_fp[-1:]))
+                logging.info("Authorized key %s", ssh_fp[:3] + ssh_fp[-1:])
     write_keyfile(keyfile_lines, "a+")
     return result
 
@@ -270,7 +269,7 @@ def remove_keys(proto, username):
     for line in read_keyfile():
         if line.endswith(comment_string):
             ssh_fp = key_fingerprint(line.split())
-            logging.info("Removed labeled key %s" % (ssh_fp[:3] + ssh_fp[-1:]))
+            logging.info("Removed labeled key %s", ssh_fp[:3] + ssh_fp[-1:])
             removed.append(line)
         else:
             update_lines.append(line)
@@ -285,6 +284,7 @@ def user_agent(extra=""):
     ssh_import_id = "ssh-import-id/%s" % VERSION
     python = "python/%d.%d.%d" % (
         sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
+    # pylint: disable=deprecated-method
     distro = "/".join(platform.dist())
     uname = "%s/%s/%s" % (os.uname()[0], os.uname()[2], os.uname()[4])
     return "%s %s %s %s %s" % (ssh_import_id, python, distro, uname, extra)
@@ -314,6 +314,7 @@ def fetch_keys_lp(lpid, useragent):
         headers = {'User-Agent': user_agent(useragent)}
         text = requests.get(url, verify=True, headers=headers).text
         keys = str(text)
+    # pylint: disable=broad-except
     except (Exception,):
         e = sys.exc_info()[1]
         sys.stderr.write("ERROR: %s\n" % (str(e)))
@@ -327,7 +328,7 @@ def fetch_keys_gh(ghid, useragent):
     keys = ""
     try:
         url = "https://api.github.com/users/%s/keys" % (quote_plus(ghid))
-        headers = {'User-Agent': user_agent()}
+        headers = {'User-Agent': user_agent(useragent)}
         resp = requests.get(url, headers=headers, verify=True)
         text = resp.text
         data = json.loads(text)
@@ -341,6 +342,7 @@ def fetch_keys_gh(ghid, useragent):
             os._exit(1)
         for keyobj in data:
             keys += "%s %s@github/%s\n" % (keyobj['key'], ghid, keyobj['id'])
+    # pylint: disable=broad-except
     except (Exception,):
         e = sys.exc_info()[1]
         sys.stderr.write("ERROR: %s\n" % (str(e)))
@@ -363,20 +365,22 @@ def main():
             else:
                 die("Invalid user ID: [%s]" % (userid))
             if parser.options.remove:
-                k = remove_keys(proto, username)
-                keys.extend(k)
+                changes = remove_keys(proto, username)
+                keys.extend(changes)
                 action = "Removed"
             else:
-                k = import_keys(proto, username, parser.options.useragent)
-                keys.extend(k)
+                changes = import_keys(
+                    proto, username, parser.options.useragent)
+                keys.extend(changes)
                 action = "Authorized"
-            if len(k) == 0:
+            if not changes:
                 errors.append(userid)
-        logging.info("[%d] SSH keys [%s]" % (len(keys), action))
+        logging.info("[%d] SSH keys [%s]", len(keys), action)
+    # pylint: disable=broad-except
     except (Exception,):
         e = sys.exc_info()[1]
         die("%s" % (str(e)))
     cleanup()
-    if len(errors) > 0:
+    if errors:
         die("No matching keys found for [%s]" % ','.join(errors))
     os._exit(0)
