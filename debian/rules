@@ -1,5 +1,8 @@
 #!/usr/bin/make -f
 
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
 DEB_VERSION := $(shell dpkg-parsechangelog --show-field=Version)
 
 %:
