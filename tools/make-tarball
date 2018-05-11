@@ -36,7 +36,7 @@ done
 
 rev=${1:-HEAD}
 version=$(git describe \
-   --tags --exclude "*-0ubuntu1" \
+   --exclude "*-0ubuntu1" \
    --abbrev=8 "--match=[0-9]*" ${long_opt} $rev)
 
 archive_base="ssh-import-id-$version"
