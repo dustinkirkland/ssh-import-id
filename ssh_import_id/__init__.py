@@ -20,23 +20,24 @@
 import argparse
 import getpass
 import json
-import logging
-import os
-import platform
-import requests
-import stat
-import subprocess
-import sys
-import tempfile
-try:
-    from urllib.parse import quote_plus
-except ImportError:
-    from urllib import quote_plus
-
 try:
     from json.decoder import JSONDecodeError
 except ImportError:
     JSONDecodeError = ValueError
+import logging
+import os
+import platform
+import stat
+import subprocess
+import sys
+import tempfile
+
+import requests
+
+try:
+    from urllib.parse import quote_plus
+except ImportError:
+    from urllib import quote_plus
 
 
 from .version import VERSION
