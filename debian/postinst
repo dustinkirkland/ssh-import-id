@@ -8,7 +8,7 @@ if [ "$1" = "configure" ]; then
     # never in Debian, let's still provide this incase some had
     # installed the package from Ubuntu.
     _sii_file="/etc/ssh/ssh_import_id"
-    if [ -f "$_sii_file" ] && dpkg --compare-versions "$oldver" le 3.0; then
+    if [ -f "$_sii_file" ] && dpkg --compare-versions "$2" le 3.0; then
         echo "Attempting to convert $_sii_file" 1>&2
         sed -i -e "/^#/d" -e "s/^URL=\"\(.*\)\"/{\"URL\": \"\1\"}/" \
             "$_sii_file" || :
