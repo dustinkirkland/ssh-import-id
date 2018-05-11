@@ -30,21 +30,36 @@ import sys
 import tempfile
 try:
     from urllib.parse import quote_plus
-except:
+except ImportError:
     from urllib import quote_plus
+
+try:
+    from json.decoder import JSONDecodeError
+except ImportError:
+    JSONDecodeError = ValueError
+
 
 from .version import VERSION
 
 
 DEFAULT_PROTO = "lp"
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
+                    level=logging.INFO)
 parser = argparse.ArgumentParser(
     description='Authorize SSH public keys from trusted online identities.',
     prog="ssh-import-id")
-parser.add_argument('-o', '--output', metavar='FILE', help='Write output to file (default ~/.ssh/authorized_keys)')
-parser.add_argument('-r', '--remove', help='Remove a key from authorized keys file', action="store_true", default=False)
-parser.add_argument('-u', '--useragent', metavar='USERAGENT', help='Append to the http user agent string', default="")
-parser.add_argument('userids', nargs='+', metavar="USERID", help='User IDs to import')
+parser.add_argument(
+    '-o', '--output', metavar='FILE',
+    help='Write output to file (default ~/.ssh/authorized_keys)')
+parser.add_argument(
+    '-r', '--remove', action="store_true", default=False,
+    help='Remove a key from authorized keys file')
+parser.add_argument(
+    '-u', '--useragent', metavar='USERAGENT', default="",
+    help='Append to the http user agent string')
+parser.add_argument(
+    'userids', nargs='+', metavar="USERID",
+    help='User IDs to import')
 parser.options = None
 TEMPFILES = []
 
@@ -76,12 +91,14 @@ def key_fingerprint(fields):
         return None
     if len(fields) < 3:
         return None
-    tempfd, tempname = tempfile.mkstemp(prefix='ssh-auth-key-check', suffix='.pub')
+    tempfd, tempname = tempfile.mkstemp(
+        prefix='ssh-auth-key-check', suffix='.pub')
     TEMPFILES.append(tempname)
     with os.fdopen(tempfd, "w") as tempf:
         tempf.write(" ".join(fields))
         tempf.write("\n")
-    keygen_proc = subprocess.Popen(['ssh-keygen', '-l', '-f', tempname], stdout=subprocess.PIPE)
+    keygen_proc = subprocess.Popen(
+        ['ssh-keygen', '-l', '-f', tempname], stdout=subprocess.PIPE)
     keygen_out, _ = keygen_proc.communicate(None)
     if keygen_proc.returncode:
         # Non-zero RC: probably not a public key
@@ -149,7 +166,7 @@ def read_keyfile():
         try:
             with open(output_file, "r") as f:
                 lines = f.readlines()
-        except:
+        except OSError:
             die("Could not read authorized key file [%s]" % (output_file))
     return lines
 
@@ -158,7 +175,8 @@ def write_keyfile(keyfile_lines, mode):
     """
     Locate key file, write lines to it
     """
-    output_file = parser.options.output or os.path.join(os.getenv("HOME"), ".ssh", "authorized_keys")
+    output_file = (parser.options.output or
+                   os.path.join(os.getenv("HOME"), ".ssh", "authorized_keys"))
     if output_file == "-":
         for line in keyfile_lines:
             if line:
@@ -177,8 +195,9 @@ def fp_tuple(fp):
     """
     Build a string that uniquely identifies a key
     """
-    # An SSH public key is uniquely identified by the tuple [length, hash, type]]
-    # fp should be a list of results of the `ssh-keygen -l -f` command
+    # An SSH public key is uniquely identified by the tuple
+    # [length, hash, type].  fp should be a list of results of
+    # the `ssh-keygen -l -f` command
     return ' '.join([fp[0], fp[1], fp[-1]])
 
 
@@ -205,14 +224,16 @@ def fetch_keys(proto, username, useragent):
     elif proto == "gh":
         return fetch_keys_gh(username, useragent)
     else:
-        die("ssh-import-id protocol handler %s: not found or cannot execute" % (proto_cmd_path))
+        die("ssh-import-id protocol handler %s: not found or cannot execute" %
+            (proto_cmd_path))
 
 
 def import_keys(proto, username, useragent):
     """
-    Import keys from service at 'proto' for 'username', appending to output file
+    Import keys from service at 'proto' for 'username', appending to output
+    file
     """
-    # Map out which keys we already have, so we don't keep appending the same ones
+    # Map out which keys we already have, so we don't append duplicates.
     local_keys = key_list(read_keyfile())
     # Protocol handler should output SSH keys, one per line
     result = []
@@ -220,16 +241,14 @@ def import_keys(proto, username, useragent):
     comment_string = "# ssh-import-id %s:%s" % (proto, username)
     for line in fetch_keys(proto, username, useragent).split('\n'):
         # Validate/clean-up key text
-        try:
-            line = line.decode('utf-8').strip()
-        except:
-            line = line.strip()
+        line = line.strip()
         fields = line.split()
         fields.append(comment_string)
         ssh_fp = key_fingerprint(fields)
         if ssh_fp:
             if fp_tuple(ssh_fp) in local_keys:
-                logging.info("Already authorized %s" % (ssh_fp[:3] + ssh_fp[-1:]))
+                logging.info(
+                    "Already authorized %s", ssh_fp[:3] + ssh_fp[-1:])
                 result.append(fields)
             else:
                 keyfile_lines.append(" ".join(fields))
@@ -263,21 +282,29 @@ def user_agent(extra=""):
     Construct a useful user agent string
     """
     ssh_import_id = "ssh-import-id/%s" % VERSION
-    python = "python/%d.%d.%d" % (sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
+    python = "python/%d.%d.%d" % (
+        sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
     distro = "/".join(platform.dist())
     uname = "%s/%s/%s" % (os.uname()[0], os.uname()[2], os.uname()[4])
     return "%s %s %s %s %s" % (ssh_import_id, python, distro, uname, extra)
 
 
 def fetch_keys_lp(lpid, useragent):
+    conf_file = "/etc/ssh/ssh_import_id"
     try:
         url = os.getenv("URL", None)
-        if url is None and os.path.exists("/etc/ssh/ssh_import_id"):
+        if url is None and os.path.exists(conf_file):
             try:
-                conf = json.loads(open("/etc/ssh/ssh_import_id").read())
-                url = conf.get("URL", None) % (quote_plus(lpid))
-            except:
-                raise Exception("Ensure that URL is defined in [/etc/ssh/ssh_import_id] is in JSON syntax")
+                contents = open(conf_file).read()
+            except OSError:
+                raise Exception("Failed to read %s" % conf_file)
+
+            try:
+                conf = json.loads(contents)
+            except JSONDecodeError:
+                raise Exception(
+                    "File %s did not have valid JSON." % conf_file)
+            url = conf.get("URL", None) % (quote_plus(lpid))
         elif url is not None:
             url = url % (quote_plus(lpid))
         # Finally, fall back to Launchpad
@@ -306,8 +333,10 @@ def fetch_keys_gh(ghid, useragent):
         if resp.status_code == 404:
             print('Username "%s" not found at GitHub API' % ghid)
             os._exit(1)
-        if x_ratelimit_remaining in resp.headers and int(resp.headers[x_ratelimit_remaining]) == 0:
-            print('GitHub REST API rate-limited this IP address. See %s' % help_url)
+        if (x_ratelimit_remaining in resp.headers and
+                int(resp.headers[x_ratelimit_remaining]) == 0):
+            print('GitHub REST API rate-limited this IP address. See %s' %
+                  help_url)
             os._exit(1)
         for keyobj in data:
             keys += "%s %s@github/%s\n" % (keyobj['key'], ghid, keyobj['id'])

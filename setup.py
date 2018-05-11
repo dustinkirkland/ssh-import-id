@@ -19,6 +19,7 @@ import os
 from setuptools import setup
 import sys
 
+
 def read_version():
     # shove 'version' into the path so we can import it without going through
     # ssh_import_id which has deps that wont be available at setup.py time.
@@ -33,8 +34,10 @@ def read_version():
 
 try:
     readme = open(os.path.join(os.path.dirname(__file__), "README.md")).read()
-except:
-    readme = "See: http://pypi.python.org/pypi?name=ssh-import-id&:action=display_pkginfo"
+except OSError:
+    readme = ("See: http://pypi.python.org/pypi?name=ssh-import-id&:"
+              "action=display_pkginfo")
+
 setup(
     name='ssh-import-id',
     description='Authorize SSH public keys from trusted online identities',
