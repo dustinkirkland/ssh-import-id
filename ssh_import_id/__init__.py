@@ -312,8 +312,15 @@ def fetch_keys_lp(lpid, useragent):
         if url is None:
             url = "https://launchpad.net/~%s/+sshkeys" % (quote_plus(lpid))
         headers = {'User-Agent': user_agent(useragent)}
-        text = requests.get(url, verify=True, headers=headers).text
-        keys = str(text)
+
+        response = requests.get(url, verify=True, headers=headers)
+        if response.status_code != 200:
+            msg = 'Requesting Launchpad keys failed.'
+            if response.status_code == 404:
+                msg = 'Launchpad user not found.'
+            die(msg + " status_code=%d user=%s" % (response.status_code, lpid))
+
+        keys = str(response.text)
     # pylint: disable=broad-except
     except Exception as e:
         die(str(e))
