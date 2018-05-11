@@ -80,7 +80,7 @@ def die(msg):
     """
     logging.error(msg)
     cleanup()
-    os._exit(1)
+    sys.exit(1)
 
 
 def key_fingerprint(fields):
@@ -385,4 +385,4 @@ def main():
     cleanup()
     if errors:
         die("No matching keys found for [%s]" % ','.join(errors))
-    os._exit(0)
+    sys.exit(0)
