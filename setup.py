@@ -41,7 +41,7 @@ except OSError:
 setup(
     name='ssh-import-id',
     description='Authorize SSH public keys from trusted online identities',
-    long_description=readme,
+    long_description_content_type='markdown',
     version=read_version(),
     author='Dustin Kirkland, Casey Marshall',
     author_email='dustin.kirkland@gmail.com, casey.marshall@gmail.com',
