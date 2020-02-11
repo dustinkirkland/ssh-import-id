@@ -1,6 +1,6 @@
 # This file is part of ssh-import-id. See LICENSE file for more info.
 
-_LAST_RELEASE = "5.7"
+_LAST_RELEASE = "5.8"
 _PACKAGED_VERSION = '@@PACKAGED_VERSION@@'
 
 VERSION = _LAST_RELEASE
