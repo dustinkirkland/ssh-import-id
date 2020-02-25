@@ -51,7 +51,7 @@ setup(
     platforms=['any'],
     packages=['ssh_import_id'],
     scripts=['usr/bin/ssh-import-id-gh', 'usr/bin/ssh-import-id-lp'],
-    install_requires=["requests>=1.1.0"],
+    install_requires=["requests>=1.1.0", "distro"],
     entry_points={
         'console_scripts': [
             'ssh-import-id = ssh_import_id:main'

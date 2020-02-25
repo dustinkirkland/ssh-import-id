@@ -7,6 +7,7 @@ Build-Depends: debhelper (>= 10),
                dh-python,
                python3-all,
                python3-requests (>= 1.1.0),
+               python3-distro,
                python3-setuptools
 Standards-Version: 4.1.3
 Homepage: http://launchpad.net/ssh-import-id
@@ -18,6 +19,7 @@ Architecture: all
 Depends: ca-certificates,
          openssh-client,
          python3-requests (>= 1.1.0),
+         python3-distro,
          wget,
          ${misc:Depends},
          ${python3:Depends}
