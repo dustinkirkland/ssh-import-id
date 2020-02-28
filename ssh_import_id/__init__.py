@@ -289,9 +289,9 @@ def user_agent(extra=""):
     ssh_import_id = "ssh-import-id/%s" % VERSION
     python = "python/%d.%d.%d" % (
         sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
-    distro = "/".join(distro.linux_distribution())
+    linux_dist = "/".join(distro.linux_distribution())
     uname = "%s/%s/%s" % (os.uname()[0], os.uname()[2], os.uname()[4])
-    return "%s %s %s %s %s" % (ssh_import_id, python, distro, uname, extra)
+    return "%s %s %s %s %s" % (ssh_import_id, python, linux_dist, uname, extra)
 
 
 def fetch_keys_lp(lpid, useragent):
