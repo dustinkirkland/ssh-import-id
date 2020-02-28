@@ -1,3 +1,10 @@
+ssh-import-id (5.9-0ubuntu1) focal; urgency=medium
+
+  * Upstream Release 5.9
+    - Use distro instead of platform [Dave Jones] (LP: #1864107)
+
+ -- Scott Moser <smoser@ubuntu.com>  Fri, 28 Feb 2020 09:44:23 -0500
+
 ssh-import-id (5.8-0ubuntu1) focal; urgency=medium
 
   * Upstream Release 5.8
