@@ -26,12 +26,12 @@ except ImportError:
     JSONDecodeError = ValueError
 import logging
 import os
-import distro
 import stat
 import subprocess
 import sys
 import tempfile
 
+import distro
 import requests
 
 try:
@@ -143,9 +143,7 @@ def assert_parent_dir(keyfile):
         os.umask(umask)
     if os.path.isdir(parent_dir):
         return True
-    else:
-        die("Parent directory not found for output [%s]" % (keyfile))
-    return False
+    die("Parent directory not found for output [%s]" % (keyfile))
 
 
 def read_keyfile():
@@ -226,7 +224,7 @@ def fetch_keys(proto, username, useragent):
     """
     if proto == "lp":
         return fetch_keys_lp(username, useragent)
-    elif proto == "gh":
+    if proto == "gh":
         return fetch_keys_gh(username, useragent)
 
     die("ssh-import-id protocol handler %s: not found or cannot execute" %
