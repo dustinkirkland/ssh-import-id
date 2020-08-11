@@ -26,20 +26,14 @@ except ImportError:
     JSONDecodeError = ValueError
 import logging
 import os
-import stat
 import subprocess
 import sys
 import tempfile
+from urllib.parse import quote_plus
 
 import distro
-import requests
 
-try:
-    from urllib.parse import quote_plus
-except ImportError:
-    from urllib import quote_plus
-
-
+from .https import https_get
 from .version import VERSION
 
 
@@ -315,7 +309,7 @@ def fetch_keys_lp(lpid, useragent):
             url = "https://launchpad.net/~%s/+sshkeys" % (quote_plus(lpid))
         headers = {'User-Agent': user_agent(useragent)}
 
-        response = requests.get(url, verify=True, headers=headers)
+        response = https_get(url, headers=headers)
         if response.status_code != 200:
             msg = 'Requesting Launchpad keys failed.'
             if response.status_code == 404:
@@ -336,7 +330,7 @@ def fetch_keys_gh(ghid, useragent):
     try:
         url = "https://api.github.com/users/%s/keys" % (quote_plus(ghid))
         headers = {'User-Agent': user_agent(useragent)}
-        resp = requests.get(url, headers=headers, verify=True)
+        resp = https_get(url, headers=headers)
         text = resp.text
         data = json.loads(text)
         if resp.status_code != 200:
