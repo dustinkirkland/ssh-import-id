@@ -23,7 +23,6 @@ def https_get(url, headers=None, port=443, timeout=15.0):
     if parsed_url.scheme != 'https':
         raise ValueError("an https URL is required")
     host = parsed_url.netloc
-    port = 443
     if ':' in host:
         host, port_str = host.rsplit(':', 1)
         port = int(port_str)
