@@ -1,13 +1,13 @@
-import http.client
 import ssl
 import urllib.parse
+from http.client import HTTPConnection, HTTPSConnection
 from collections import namedtuple
 
 
 HttpsResponse = namedtuple('HttpsResponse', ['text', 'status_code', 'headers'])
 
 
-class HttpHeaders(object):
+class HttpHeaders:  # pylint: disable=too-few-public-methods
     """Shim replacement for requests's CaseInsensitiveDict."""
 
     def __init__(self, headers):
@@ -38,13 +38,15 @@ def http_get(url, headers=None, port=None, timeout=15.0):
         headers = {}
 
     if is_https:
-        conn = http.client.HTTPSConnection(host, port, timeout=timeout, context=ssl.create_default_context())
+        conn = HTTPSConnection(host, port, timeout=timeout,
+                               context=ssl.create_default_context())
     else:
-        conn = http.client.HTTPConnection(host, port, timeout=timeout)
+        conn = HTTPConnection(host, port, timeout=timeout)
 
     try:
         conn.request('GET', path, headers=headers)
         response = conn.getresponse()
-        return HttpsResponse(response.read().decode('utf-8'), response.status, HttpHeaders(response.getheaders()))
+        return HttpsResponse(response.read().decode('utf-8'), response.status,
+                             HttpHeaders(response.getheaders()))
     finally:
         conn.close()
