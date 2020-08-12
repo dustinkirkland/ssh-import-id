@@ -33,7 +33,7 @@ from urllib.parse import quote_plus
 
 import distro
 
-from .https import https_get
+from .https import http_get
 from .version import VERSION
 
 
@@ -309,7 +309,7 @@ def fetch_keys_lp(lpid, useragent):
             url = "https://launchpad.net/~%s/+sshkeys" % (quote_plus(lpid))
         headers = {'User-Agent': user_agent(useragent)}
 
-        response = https_get(url, headers=headers)
+        response = http_get(url, headers=headers)
         if response.status_code != 200:
             msg = 'Requesting Launchpad keys failed.'
             if response.status_code == 404:
@@ -330,7 +330,7 @@ def fetch_keys_gh(ghid, useragent):
     try:
         url = "https://api.github.com/users/%s/keys" % (quote_plus(ghid))
         headers = {'User-Agent': user_agent(useragent)}
-        resp = https_get(url, headers=headers)
+        resp = http_get(url, headers=headers)
         text = resp.text
         data = json.loads(text)
         if resp.status_code != 200:

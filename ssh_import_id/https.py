@@ -17,21 +17,31 @@ class HttpHeaders(object):
         return self._headers.get(header.lower())
 
 
-def https_get(url, headers=None, port=443, timeout=15.0):
+def http_get(url, headers=None, port=None, timeout=15.0):
     """Simple replacement for requests.get."""
     parsed_url = urllib.parse.urlparse(url)
-    if parsed_url.scheme != 'https':
-        raise ValueError("an https URL is required")
+
+    is_https = (parsed_url.scheme.lower() != 'http')
+    if port is None:
+        port = 443 if is_https else 80
+
     host = parsed_url.netloc
     if ':' in host:
         host, port_str = host.rsplit(':', 1)
         port = int(port_str)
+
     path = parsed_url.path
     if parsed_url.query:
         path = '%s?%s' % (path, parsed_url.query)
-    conn = http.client.HTTPSConnection(host, port, timeout=timeout, context=ssl.create_default_context())
+
     if headers is None:
         headers = {}
+
+    if is_https:
+        conn = http.client.HTTPSConnection(host, port, timeout=timeout, context=ssl.create_default_context())
+    else:
+        conn = http.client.HTTPConnection(host, port, timeout=timeout)
+
     try:
         conn.request('GET', path, headers=headers)
         response = conn.getresponse()
