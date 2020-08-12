@@ -4,7 +4,7 @@ from http.client import HTTPConnection, HTTPSConnection
 from collections import namedtuple
 
 
-HttpsResponse = namedtuple('HttpsResponse', ['text', 'status_code', 'headers'])
+HttpResponse = namedtuple('HttpResponse', ['text', 'status_code', 'headers'])
 
 
 class HttpHeaders:  # pylint: disable=too-few-public-methods
@@ -46,7 +46,7 @@ def http_get(url, headers=None, port=None, timeout=15.0):
     try:
         conn.request('GET', path, headers=headers)
         response = conn.getresponse()
-        return HttpsResponse(response.read().decode('utf-8'), response.status,
-                             HttpHeaders(response.getheaders()))
+        return HttpResponse(response.read().decode('utf-8'), response.status,
+                            HttpHeaders(response.getheaders()))
     finally:
         conn.close()
