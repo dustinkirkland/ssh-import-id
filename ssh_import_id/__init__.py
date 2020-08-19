@@ -27,14 +27,28 @@ except ImportError:
 import logging
 import os
 import subprocess
+import ssl
 import sys
 import tempfile
+from collections import namedtuple
 from urllib.parse import quote_plus
+from urllib.request import Request, urlopen
 
 import distro
 
-from .https import http_get
 from .version import VERSION
+
+
+HttpResponse = namedtuple('HttpResponse', ['text', 'status_code', 'headers'])
+
+
+def http_get(url, headers=None, timeout=15.0):
+    """Simple replacement for requests.get."""
+    request = Request(url, headers=headers)
+    with urlopen(request, timeout=timeout,
+                 context=ssl.create_default_context()) as response:
+        return HttpResponse(response.read().decode('utf-8'), response.status,
+                            response.headers)
 
 
 DEFAULT_PROTO = "lp"
