@@ -38,6 +38,9 @@ import distro
 from .version import VERSION
 
 
+DEFAULT_TIMEOUT = 15.0
+
+
 DEFAULT_PROTO = "lp"
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.INFO)
@@ -310,7 +313,8 @@ def fetch_keys_lp(lpid, useragent):
             url = "https://launchpad.net/~%s/+sshkeys" % (quote_plus(lpid))
         headers = {'User-Agent': user_agent(useragent)}
 
-        with urlopen(Request(url, headers=headers)) as response:
+        with urlopen(Request(url, headers=headers),
+                     timeout=DEFAULT_TIMEOUT) as response:
             if response.status != 200:
                 msg = 'Requesting Launchpad keys failed.'
                 if response.status == 404:
@@ -331,7 +335,8 @@ def fetch_keys_gh(ghid, useragent):
     try:
         url = "https://api.github.com/users/%s/keys" % (quote_plus(ghid))
         headers = {'User-Agent': user_agent(useragent)}
-        with urlopen(Request(url, headers=headers)) as resp:
+        with urlopen(Request(url, headers=headers),
+                     timeout=DEFAULT_TIMEOUT) as resp:
             status = resp.status
             ratelimit_header = resp.headers.get(x_ratelimit_remaining)
             data = json.load(resp)
