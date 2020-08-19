@@ -30,25 +30,12 @@ import subprocess
 import ssl
 import sys
 import tempfile
-from collections import namedtuple
 from urllib.parse import quote_plus
 from urllib.request import Request, urlopen
 
 import distro
 
 from .version import VERSION
-
-
-HttpResponse = namedtuple('HttpResponse', ['text', 'status_code', 'headers'])
-
-
-def http_get(url, headers=None, timeout=15.0):
-    """Simple replacement for requests.get."""
-    request = Request(url, headers=headers)
-    with urlopen(request, timeout=timeout,
-                 context=ssl.create_default_context()) as response:
-        return HttpResponse(response.read().decode('utf-8'), response.status,
-                            response.headers)
 
 
 DEFAULT_PROTO = "lp"
@@ -323,14 +310,14 @@ def fetch_keys_lp(lpid, useragent):
             url = "https://launchpad.net/~%s/+sshkeys" % (quote_plus(lpid))
         headers = {'User-Agent': user_agent(useragent)}
 
-        response = http_get(url, headers=headers)
-        if response.status_code != 200:
-            msg = 'Requesting Launchpad keys failed.'
-            if response.status_code == 404:
-                msg = 'Launchpad user not found.'
-            die(msg + " status_code=%d user=%s" % (response.status_code, lpid))
+        with urlopen(Request(url, headers=headers)) as response:
+            if response.status != 200:
+                msg = 'Requesting Launchpad keys failed.'
+                if response.status == 404:
+                    msg = 'Launchpad user not found.'
+                die(msg + " status_code=%d user=%s" % (response.status, lpid))
+            keys = response.read().decode('utf-8')
 
-        keys = str(response.text)
     # pylint: disable=broad-except
     except Exception as e:
         die(str(e))
@@ -344,14 +331,15 @@ def fetch_keys_gh(ghid, useragent):
     try:
         url = "https://api.github.com/users/%s/keys" % (quote_plus(ghid))
         headers = {'User-Agent': user_agent(useragent)}
-        resp = http_get(url, headers=headers)
-        text = resp.text
-        data = json.loads(text)
-        if resp.status_code != 200:
+        with urlopen(Request(url, headers=headers)) as resp:
+            status = resp.status
+            ratelimit_header = resp.headers.get(x_ratelimit_remaining)
+            data = json.load(resp)
+        if status != 200:
             msg = 'Requesting GitHub keys failed.'
-            if resp.status_code == 404:
+            if status == 404:
                 msg = 'Username "%s" not found at GitHub API.' % ghid
-            elif resp.headers.get(x_ratelimit_remaining) == "0":
+            elif ratelimit_header == "0":
                 msg = ('GitHub REST API rate-limited this IP address. See %s .'
                        % help_url)
             die(msg + " status_code=%d user=%s" % (resp.status_code, ghid))
