@@ -27,7 +27,6 @@ except ImportError:
 import logging
 import os
 import subprocess
-import ssl
 import sys
 import tempfile
 import urllib.error
