@@ -24,7 +24,7 @@ def read_version():
     # shove 'version' into the path so we can import it without going through
     # ssh_import_id which has deps that wont be available at setup.py time.
     # specifically, from 'ssh_import_id import version'
-    # will fail due to requests not available.
+    # may fail due to dependencies not available.
     verdir = os.path.abspath(
         os.path.join(os.path.dirname(__file__), "ssh_import_id"))
     sys.path.insert(0, verdir)
@@ -51,7 +51,7 @@ setup(
     platforms=['any'],
     packages=['ssh_import_id'],
     scripts=['usr/bin/ssh-import-id-gh', 'usr/bin/ssh-import-id-lp'],
-    install_requires=["requests>=1.1.0", "distro"],
+    install_requires=["distro"],
     entry_points={
         'console_scripts': [
             'ssh-import-id = ssh_import_id:main'

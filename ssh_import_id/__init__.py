@@ -26,21 +26,19 @@ except ImportError:
     JSONDecodeError = ValueError
 import logging
 import os
-import stat
 import subprocess
 import sys
 import tempfile
+import urllib.error
+from urllib.parse import quote_plus
+from urllib.request import Request, urlopen
 
 import distro
-import requests
-
-try:
-    from urllib.parse import quote_plus
-except ImportError:
-    from urllib import quote_plus
-
 
 from .version import VERSION
+
+
+DEFAULT_TIMEOUT = 15.0
 
 
 DEFAULT_PROTO = "lp"
@@ -315,14 +313,16 @@ def fetch_keys_lp(lpid, useragent):
             url = "https://launchpad.net/~%s/+sshkeys" % (quote_plus(lpid))
         headers = {'User-Agent': user_agent(useragent)}
 
-        response = requests.get(url, verify=True, headers=headers)
-        if response.status_code != 200:
+        try:
+            with urlopen(Request(url, headers=headers),
+                         timeout=DEFAULT_TIMEOUT) as response:
+                keys = response.read().decode('utf-8')
+        except urllib.error.HTTPError as e:
             msg = 'Requesting Launchpad keys failed.'
-            if response.status_code == 404:
+            if e.code == 404:
                 msg = 'Launchpad user not found.'
-            die(msg + " status_code=%d user=%s" % (response.status_code, lpid))
+            die(msg + " status_code=%d user=%s" % (e.code, lpid))
 
-        keys = str(response.text)
     # pylint: disable=broad-except
     except Exception as e:
         die(str(e))
@@ -336,17 +336,18 @@ def fetch_keys_gh(ghid, useragent):
     try:
         url = "https://api.github.com/users/%s/keys" % (quote_plus(ghid))
         headers = {'User-Agent': user_agent(useragent)}
-        resp = requests.get(url, headers=headers, verify=True)
-        text = resp.text
-        data = json.loads(text)
-        if resp.status_code != 200:
+        try:
+            with urlopen(Request(url, headers=headers),
+                         timeout=DEFAULT_TIMEOUT) as resp:
+                data = json.load(resp)
+        except urllib.error.HTTPError as e:
             msg = 'Requesting GitHub keys failed.'
-            if resp.status_code == 404:
+            if e.code == 404:
                 msg = 'Username "%s" not found at GitHub API.' % ghid
-            elif resp.headers.get(x_ratelimit_remaining) == "0":
+            elif e.hdrs.get(x_ratelimit_remaining) == "0":
                 msg = ('GitHub REST API rate-limited this IP address. See %s .'
                        % help_url)
-            die(msg + " status_code=%d user=%s" % (resp.status_code, ghid))
+            die(msg + " status_code=%d user=%s" % (e.code, ghid))
         for keyobj in data:
             keys += "%s %s@github/%s\n" % (keyobj['key'], ghid, keyobj['id'])
     # pylint: disable=broad-except
