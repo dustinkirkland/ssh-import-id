@@ -18,7 +18,7 @@ ssh-import-id uses short prefix to indicate the location of the online identity.
 	'gh:' for Github
 	'lp:' for Launchpad
 
-Additional ones can be configured with the `URL` enviroment variable:
+Additional ones can be configured with the `URL` environment variable:
 
 	URL="https://gitlab.com/%s.keys" ssh-import-id user
 
