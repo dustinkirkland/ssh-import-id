@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# ssh-import-id-gl - Authorize SSH public keys from trusted online identities (Gitlab).
+#
+# Copyright (c) 2022 Shannon Eric Peevey <shannonpeevey@gmail.com> 
+#
+# ssh-import-id-gl is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# ssh-import-id-gl is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with ssh-import-id-gl.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+for i in $@; do
+	ssh-import-id gl:$i
+done

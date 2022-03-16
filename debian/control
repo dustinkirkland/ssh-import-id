@@ -27,6 +27,6 @@ Depends: ca-certificates,
 Recommends: openssh-server
 Description: securely retrieve an SSH public key and install it locally
  This utility will securely contact a public keyserver (Launchpad.net by
- default, but Github.com is also supported), retrieve one or more user's
+ default, but Github.com and Gitlab.com are also supported), retrieve one or more user's
  public keys, and append these to the current user's ~/.ssh/authorized_keys
  file.

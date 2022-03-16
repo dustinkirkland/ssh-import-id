@@ -16,6 +16,7 @@ Usage
 ssh-import-id uses short prefix to indicate the location of the online identity. For now, these are:
 
 	'gh:' for Github
+	'gl:' for Gitlab
 	'lp:' for Launchpad
 
 Command line help:
@@ -41,7 +42,7 @@ If you wanted me to be able to ssh into your server, as the desired user on that
 
 You can also import multiple users on the same line, even from different key services, like so:
 
-	$ ssh-import-id gh:cmars lp:kirkland
+	$ ssh-import-id gh:cmars lp:kirkland gl:speeves
 
 Used with care, it's a great collaboration tool!
 
