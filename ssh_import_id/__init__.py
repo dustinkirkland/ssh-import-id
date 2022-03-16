@@ -22,7 +22,7 @@ import getpass
 import json
 import logging
 import os
-import platform
+import distro
 import requests
 import stat
 import subprocess
@@ -201,6 +201,8 @@ def fetch_keys(proto, username, useragent):
 		return fetch_keys_lp(username, useragent)
 	elif proto == "gh":
 		return fetch_keys_gh(username, useragent)
+	elif proto == "gl":
+		return fetch_keys_gl(username, useragent)
 	else:
 		die("ssh-import-id protocol handler %s: not found or cannot execute" % (proto_cmd_path))
 
@@ -261,9 +263,27 @@ def user_agent(extra=""):
 	"""
 	ssh_import_id = "ssh-import-id/%s" % __version__
 	python = "python/%d.%d.%d" % (sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
-	distro = "/".join(platform.dist())
+	my_distro = "/".join(distro.id())
 	uname = "%s/%s/%s" % (os.uname()[0], os.uname()[2], os.uname()[4])
-	return "%s %s %s %s %s" % (ssh_import_id, python, distro, uname, extra)
+	return "%s %s %s %s %s" % (ssh_import_id, python, my_distro, uname, extra)
+
+
+def fetch_keys_gl(lpid, useragent):
+	try:
+		url = os.getenv("URL", None)
+		if url is not None:
+			url = url % (quote_plus(lpid))
+		# Finally, fall back to gitlab.com
+		if url is None:
+			url = "https://gitlab.com/%s.keys" % (quote_plus(lpid))
+		headers = {'User-Agent': user_agent(useragent)}
+		text = requests.get(url, verify=True, headers=headers).text
+		keys = str(text)
+	except (Exception,):
+		e = sys.exc_info()[1]
+		sys.stderr.write("ERROR: %s\n" % (str(e)))
+		os._exit(1)
+	return keys
 
 
 def fetch_keys_lp(lpid, useragent):
