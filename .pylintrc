@@ -3,6 +3,13 @@ disable=
   inconsistent-return-statements,
   invalid-name,
   missing-docstring,
+  broad-exception-raised,
+  consider-using-f-string,
+  consider-using-with,
+  possibly-used-before-assignment,
+  raise-missing-from,
+  unspecified-encoding,
+  line-too-long,
 
 [REPORTS]
 output-format=parseable

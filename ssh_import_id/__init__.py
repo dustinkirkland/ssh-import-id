@@ -18,7 +18,10 @@
 # along with ssh-import-id.  If not, see <http://www.gnu.org/licenses/>.
 
 import argparse
+import binascii
+import base64
 import getpass
+import hashlib
 import json
 try:
     from json.decoder import JSONDecodeError
@@ -26,9 +29,8 @@ except ImportError:
     JSONDecodeError = ValueError
 import logging
 import os
-import subprocess
+import struct
 import sys
-import tempfile
 import urllib.error
 from urllib.parse import quote_plus
 from urllib.request import Request, urlopen
@@ -81,36 +83,79 @@ def die(msg):
     sys.exit(1)
 
 
+def read_string(buf, off):
+    if off + 4 > len(buf):
+        raise SystemExit("truncated:%s" % buf)
+    slen = struct.unpack(">I", buf[off:off + 4])[0]
+    off += 4
+    return buf[off:off + slen], off + slen
+
+
+def rsa_keylen(buf):
+    alg, off = read_string(buf, 0)
+    if alg != b'ssh-rsa':
+        raise ValueError(f"key is type {alg} not ssh-rsa: {buf}")
+    _, off = read_string(buf, off)  # exponent
+    klenbuf, off = read_string(buf, off)
+    return int.from_bytes(klenbuf, 'big').bit_length()
+
+
+def dsa_keylen(buf):
+    alg, off = read_string(buf, 0)
+    if alg != b'ssh-dss':
+        raise ValueError(f"key is type {alg} not ssh-dss: {buf}")
+    mpint, off = read_string(buf, off)
+    return int.from_bytes(mpint, 'big').bit_length()
+
+
 def key_fingerprint(fields):
     """
-    Get the fingerprint for an SSH public key
-    Returns None if not valid key material
+    Compute the SSH public key fingerprint as would be output with
+    ssh-keygen -l -f <file>
+    Example:
+      key_fingerprint(['ssh-ed25519',
+        'AAAAC3NzaC1lZDI1NTE5AAAAIMkGoTfVoNpsJrNxzq9WpRhlCp0qsPwsOHopWxNbIM8Z',
+        'smoser@frink'])
+      -> ['256', 'SHA256:XCEFfvF2V6u0ESVb/GLp/HAHVCZMoi36uskzHxTBUk0',
+          'smoser@frink', '(ED25519)']
     """
-    if not fields:
+    if not fields or len(fields) < 2:
         return None
-    if len(fields) < 3:
+
+    key_type = fields[0]
+    key_b64 = fields[1]
+    comment = ' '.join(fields[2:]) if len(fields) > 2 else "no comment"
+
+    try:
+        key_ascii = key_b64.encode("ascii")
+        key_bytes = base64.b64decode(key_ascii)
+    except (UnicodeDecodeError, binascii.Error):
         return None
-    tempfd, tempname = tempfile.mkstemp(
-        prefix='ssh-auth-key-check', suffix='.pub')
-    TEMPFILES.append(tempname)
-    with os.fdopen(tempfd, "w") as tempf:
-        tempf.write(" ".join(fields))
-        tempf.write("\n")
-    keygen_proc = subprocess.Popen(
-        ['ssh-keygen', '-l', '-f', tempname], stdout=subprocess.PIPE)
-    keygen_out, _ = keygen_proc.communicate(None)
-    if keygen_proc.returncode:
-        # Non-zero RC: probably not a public key
-        return None
-    os.unlink(tempname)
-    keygen_fields = keygen_out.split()
-    if not keygen_fields or len(keygen_fields) < 2:
-        # Empty output?
-        return None
-    out = []
-    for k in keygen_out.split():
-        out.append(str(k.decode('utf-8').strip()))
-    return out
+
+    # Compute SHA256 fingerprint (same as ssh-keygen -l -E sha256)
+    digest = hashlib.sha256(key_bytes).digest()
+    fp_b64 = base64.b64encode(digest).decode("ascii").rstrip("=")
+    fingerprint = f"SHA256:{fp_b64}"
+
+    # Map key type to bit length and printable type name
+    key_map = {
+        "ssh-ed25519": ("256", "ED25519"),
+        "ecdsa-sha2-nistp256": ("256", "ECDSA"),
+        "ecdsa-sha2-nistp384": ("384", "ECDSA"),
+        "ecdsa-sha2-nistp521": ("521", "ECDSA"),
+        "sk-ecdsa-sha2-nistp256@openssh.com": ("256", "ECDSA-SK"),
+        "sk-ssh-ed25519@openssh.com": ("256", "ED25519-SK"),
+    }
+
+    # rsa and dsa have variable length keys
+    if key_type == "ssh-rsa":
+        bits, ptype = (str(rsa_keylen(key_bytes)), "RSA")
+    elif key_type == "ssh-dss":
+        bits, ptype = (str(dsa_keylen(key_bytes)), "DSA")
+    else:
+        bits, ptype = key_map.get(key_type, ("?", f"{key_type}"))
+
+    return [bits, fingerprint, comment, f"({ptype})"]
 
 
 def open_output(name, mode='a+'):
