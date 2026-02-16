@@ -234,6 +234,33 @@ def get_keyfile(path=None):
             home = os.path.expanduser("~" + getpass.getuser())
 
         path = os.path.join(home, ".ssh", "authorized_keys")
+    else:
+        # Validate the provided path to prevent path traversal attacks
+        # Special case: allow stdout
+        if path == "-":
+            return path
+
+        # Resolve the path to its absolute, canonical form
+        abs_path = os.path.abspath(os.path.expanduser(path))
+
+        # Get the user's home directory for validation
+        if os.environ.get("HOME"):
+            home = os.environ["HOME"]
+        else:
+            home = os.path.expanduser("~" + getpass.getuser())
+
+        # Ensure the path is within the user's home directory
+        # or explicitly allow /tmp for testing purposes
+        home_abs = os.path.abspath(home)
+        tmp_abs = os.path.abspath("/tmp")
+
+        if not (abs_path.startswith(home_abs + os.sep) or
+                abs_path.startswith(tmp_abs + os.sep) or
+                abs_path == home_abs):
+            die("Output path must be within user's home directory or /tmp: %s" % path)
+
+        path = abs_path
+
     return path
 
 
@@ -350,12 +377,26 @@ def fetch_keys_lp(lpid, useragent):
             except JSONDecodeError:
                 raise Exception(
                     "File %s did not have valid JSON." % conf_file)
-            url = conf.get("URL", None) % (quote_plus(lpid))
+            url_template = conf.get("URL", None)
+            if url_template and "{}" in url_template:
+                url = url_template.format(quote_plus(lpid))
+            else:
+                # Fallback to old format for backwards compatibility
+                # but validate that it only contains safe format specifiers
+                if url_template and url_template.count('%') == url_template.count('%s'):
+                    url = url_template.replace('%s', '{}').format(quote_plus(lpid))
+                else:
+                    die("Invalid URL template in config file: %s" % conf_file)
         elif url is not None:
-            url = url % (quote_plus(lpid))
+            if "{}" in url:
+                url = url.format(quote_plus(lpid))
+            elif url.count('%') == url.count('%s'):
+                url = url.replace('%s', '{}').format(quote_plus(lpid))
+            else:
+                die("Invalid URL template in environment variable")
         # Finally, fall back to Launchpad
         if url is None:
-            url = "https://launchpad.net/~%s/+sshkeys" % (quote_plus(lpid))
+            url = "https://launchpad.net/~{}/+sshkeys".format(quote_plus(lpid))
         headers = {'User-Agent': user_agent(useragent)}
 
         try:

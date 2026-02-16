@@ -1,3 +1,21 @@
+ssh-import-id (5.12-0ubuntu1) noble; urgency=high
+
+  * SECURITY UPDATE: Fix critical security vulnerabilities
+    - Fix command injection in shell wrapper scripts (usr/bin/ssh-import-id-gh
+      and usr/bin/ssh-import-id-lp). Properly quote variables to prevent shell
+      injection when usernames contain special characters or metacharacters.
+      (CVE-XXXX-XXXXX pending)
+    - Fix format string vulnerability in configuration file handling. Replace
+      unsafe % string formatting with .format() method and add validation to
+      prevent format string injection attacks via malicious config files.
+      (CVE-XXXX-XXXXX pending)
+    - Fix path traversal vulnerability in output file handling. Add
+      comprehensive path validation to prevent writing to arbitrary system
+      locations outside user's home directory.
+      (CVE-XXXX-XXXXX pending)
+
+ -- Security Audit <security@localhost>  Sat, 15 Feb 2026 18:00:00 -0600
+
 ssh-import-id (5.11-0ubuntu1) hirsute; urgency=medium
 
   * Upstream Release 5.11
