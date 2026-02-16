@@ -1,3 +1,16 @@
+ssh-import-id (5.13-0ubuntu1) noble; urgency=medium
+
+  * New feature: Add GitLab support
+    - Add fetch_keys_gl() function to import SSH keys from GitLab
+    - Create usr/bin/ssh-import-id-gl wrapper script for GitLab
+    - Support both GitLab.com and self-hosted GitLab instances via
+      GITLAB_URL environment variable
+    - Update documentation with GitLab examples and usage
+    - Users can now use 'gl:username' prefix to import GitLab keys
+    - Example: ssh-import-id gl:username
+
+ -- Dustin Kirkland <dustin.kirkland@gmail.com>  Sat, 15 Feb 2026 18:45:00 -0600
+
 ssh-import-id (5.12-0ubuntu1) noble; urgency=high
 
   * SECURITY UPDATE: Fix critical security vulnerabilities

@@ -8,14 +8,15 @@ Oh. You have to ask them to cat their public SSH key, paste it into IRC (wait, n
 
 That's where ssh-import-id comes in. With ssh-import-id, you can add the public SSH keys from a known, trusted online identity to grant SSH access.
 
-Currently supported identities include Github and Launchpad.
+Currently supported identities include GitHub, GitLab, and Launchpad.
 
 Usage
 -----
 
 ssh-import-id uses short prefix to indicate the location of the online identity. For now, these are:
 
-    'gh:' for Github
+    'gh:' for GitHub
+    'gl:' for GitLab
     'lp:' for Launchpad
 
 Command line help:
@@ -41,7 +42,11 @@ If you wanted me to be able to ssh into your server, as the desired user on that
 
 You can also import multiple users on the same line, even from different key services, like so:
 
-    $ ssh-import-id gh:cmars lp:kirkland
+    $ ssh-import-id gh:cmars lp:kirkland gl:username
+
+For self-hosted GitLab instances, set the GITLAB_URL environment variable:
+
+    $ GITLAB_URL=https://gitlab.example.com ssh-import-id gl:username
 
 Used with care, it's a great collaboration tool!
 

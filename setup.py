@@ -50,7 +50,7 @@ setup(
     url='https://launchpad.net/ssh-import-id',
     platforms=['any'],
     packages=['ssh_import_id'],
-    scripts=['usr/bin/ssh-import-id-gh', 'usr/bin/ssh-import-id-lp'],
+    scripts=['usr/bin/ssh-import-id-gh', 'usr/bin/ssh-import-id-gl', 'usr/bin/ssh-import-id-lp'],
     install_requires=["distro"],
     entry_points={
         'console_scripts': [

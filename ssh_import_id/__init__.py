@@ -296,6 +296,8 @@ def fetch_keys(proto, username, useragent):
         return fetch_keys_lp(username, useragent)
     if proto == "gh":
         return fetch_keys_gh(username, useragent)
+    if proto == "gl":
+        return fetch_keys_gl(username, useragent)
 
     die("ssh-import-id protocol handler %s: not found or cannot execute" %
         (proto))
@@ -436,6 +438,47 @@ def fetch_keys_gh(ghid, useragent):
             die(msg + " status_code=%d user=%s" % (e.code, ghid))
         for keyobj in data:
             keys += "%s %s@github/%s\n" % (keyobj['key'], ghid, keyobj['id'])
+    # pylint: disable=broad-except
+    except Exception as e:
+        die(str(e))
+    return keys
+
+
+def fetch_keys_gl(glid, useragent):
+    """
+    Fetch SSH public keys from GitLab.
+    Supports both GitLab.com and self-hosted GitLab instances.
+    """
+    keys = ""
+    try:
+        # Check for custom GitLab instance URL in environment
+        gitlab_url = os.getenv("GITLAB_URL", "https://gitlab.com")
+        # Remove trailing slash if present
+        gitlab_url = gitlab_url.rstrip('/')
+
+        # GitLab provides keys at: https://gitlab.com/<username>.keys
+        url = "{}/{}".format(gitlab_url, quote_plus(glid)) + ".keys"
+        headers = {'User-Agent': user_agent(useragent)}
+
+        try:
+            with urlopen(Request(url, headers=headers),
+                         timeout=DEFAULT_TIMEOUT) as resp:
+                # GitLab returns keys in authorized_keys format (not JSON)
+                keys_data = resp.read().decode('utf-8')
+        except urllib.error.HTTPError as e:
+            msg = 'Requesting GitLab keys failed.'
+            if e.code == 404:
+                msg = 'Username "%s" not found at GitLab.' % glid
+            die(msg + " status_code=%d user=%s url=%s" % (e.code, glid, url))
+
+        # Process keys - GitLab returns in authorized_keys format
+        # Add comment to identify the source
+        for line in keys_data.split('\n'):
+            line = line.strip()
+            if line and not line.startswith('#'):
+                # Add gitlab identifier to the key
+                keys += "{} {}@gitlab\n".format(line, glid)
+
     # pylint: disable=broad-except
     except Exception as e:
         die(str(e))
